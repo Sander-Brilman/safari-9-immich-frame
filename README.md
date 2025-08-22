@@ -1,0 +1,1 @@
+# safari-9-immich-kiosk
