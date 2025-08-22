@@ -1,0 +1,88 @@
+- name: publishing app
+  hosts: all
+  become: true
+  vars_files:
+    - ./variables.yml
+  tasks:
+    - name: "create {{ APP_USER }} group"
+      group:
+        name: "{{ APP_USER }}"
+        state: present
+
+    - name: "add caddy to {{ APP_USER }} group" 
+      user:
+        name: caddy
+        groups: "{{ APP_USER }}"
+        append: true
+        state: present
+
+
+    - name: "add restic to {{ APP_USER }} group" 
+      user:
+        name: restic
+        groups: "{{ APP_USER }}"
+        append: true
+        state: present
+
+    - name: "create {{ APP_USER }} user"
+      user:
+        name: "{{ APP_USER }}"  
+        create_home: true
+        groups: "{{ APP_USER }}"
+        state: present
+        shell: /usr/sbin/nologin
+        password: '!'
+
+
+
+
+- name: copy source code
+  tags: copy_source_code
+  hosts: all
+  become: true
+  vars_files:
+    - ./variables.yml
+  tasks:
+    - name: copy source code  
+      copy:
+        src: ../../src/
+        dest: "/home/{{ APP_USER }}/"
+        owner: "{{ APP_USER }}"
+        group: "{{ APP_USER }}"
+        mode: u=rx,g=rx,o=
+
+  
+- name: setup reverse proxy
+  hosts: all
+  become: true
+  vars_files:
+    - ./variables.yml
+  tasks:
+    - name: template caddy file
+      template:
+        src: caddyfile.j2
+        dest: "/etc/caddy/sites/{{ APP_USER }}.caddyfile"
+        owner: caddy
+        group: restic
+        mode: u=r,g=r,o=
+
+    - name: reloading caddy config
+      command: sudo caddy reload --config /etc/caddy/Caddyfile
+        
+      
+  
+- name: setup backup
+  hosts: all
+  become: true
+  vars_files:
+    - ./variables.yml
+  tasks:
+    - name: template backup location file
+      template:
+        src: backup-locations.txt.j2
+        dest: "/home/restic/backup-locations/{{ APP_USER }}.caddyfile"
+        owner: caddy
+        group: restic
+        mode: u=r,g=r,o=
+        
+      
