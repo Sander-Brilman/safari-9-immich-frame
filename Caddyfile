@@ -1,0 +1,15 @@
+http:// {
+	# @notApi {
+	# 	not {
+	# 		path /api/*
+	# 	}
+	# }
+
+	file_server {
+		root ./Safari9ImmichKiosk/
+	}
+
+	# 	reverse_proxy /api/* {
+	# 		to https://immich.sanderbrilman.nl
+	# 	}
+}

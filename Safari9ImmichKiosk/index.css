@@ -1,0 +1,170 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+main {
+    width: 100%;
+    height: 100%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    margin: 0;
+    background: rgb(24, 24, 24);
+    color: whitesmoke;
+    margin-top: 200px;
+}
+
+header {
+    position: absolute;
+    top: .5em;
+    width: 100%;
+    padding: 1em;
+}
+
+header > button {
+    margin-right: 10px;
+    font-size: 1.2rem;
+    -webkit-backdrop-filter: none;
+}
+
+main {
+    position: relative;
+}
+
+main > * {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.message {
+    margin: 1em;
+    border: solid 2px transparent;
+    font-size: 1.2rem;
+    padding: .5em 1em;
+}
+
+.error {
+    color: firebrick;
+    border-color: firebrick;
+}
+
+.success {
+    color: green;
+    border-color: green;
+}
+
+.album-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.album-grid h1 {
+    width: 100%;
+}
+
+button {
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.album-grid button {
+    margin: 1em;
+    margin-top: 0;
+    font-size: 1.3em;
+    text-align: left;    
+    -webkit-backdrop-filter: none;
+}
+
+i {
+    font-size: .9em;
+    margin-right: .3em;
+}
+
+.album-grid button small {
+    font-size: .8em;
+    font-style: italic;
+    opacity: .7;
+}
+
+
+.img {
+    background-size: cover;
+    /* background-size: 100%; */
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transition: background-size 7s linear;
+}
+
+.content-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.glass-tile {
+    border: 0;
+    background: rgba(75, 75, 75, 0.3);
+    box-shadow: inset -1px 2px 5px 0px rgba(220, 220, 220, 0.20);
+    border-radius: 6px;
+    color: white;
+    padding: .7em 1em;
+}
+
+.location {
+    font-weight: bolder;
+    /* min-width: 35%; */
+    padding: .75em;
+    padding-right: 2em;
+    font-size: 2rem;
+
+    margin: .5em;
+    margin-left: 0;
+    
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0; 
+
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.location > small {
+    font-style: italic;
+    opacity: .8;
+    font-size: .7em;
+}
+
+.settings-form {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.settings-form > label {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.settings-form > label > span {
+    font-size: .8em;
+    opacity: .8;
+} 
+
+.settings-form > label > input{
+    display: block;
+    width: 100%;
+    background: none;
+    font-size: 1rem;
+    padding: .3em;
+    border: 0;
+    border-bottom: dashed 2px grey;
+    color: white;
+}
