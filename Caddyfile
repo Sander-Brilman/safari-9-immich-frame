@@ -1,17 +1,13 @@
 http:// {
-	# @notApi {
-	# 	not {
-	# 		path /api/*
-	# 	}
-	# }
-
 	file_server {
-		root ./Safari9ImmichKiosk/
+		root ./safari-9-immich-kiosk/
 	}
 
 	encode
 
-	# 	reverse_proxy /api/* {
-	# 		to https://immich.sanderbrilman.nl
-	# 	}
+	header {
+		Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+		Expires "0"
+		Pragma "no-cache"
+	}
 }

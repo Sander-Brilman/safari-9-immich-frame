@@ -14,14 +14,12 @@ body {
     margin: 0;
     background: rgb(24, 24, 24);
     color: whitesmoke;
-    margin-top: 200px;
 }
 
 header {
-    position: absolute;
-    top: .5em;
-    width: 100%;
+    min-height: 200px;
     padding: 1em;
+    margin-bottom: 1rem;
 }
 
 header > button {
@@ -42,11 +40,24 @@ main > * {
     height: 100%;
 }
 
+
+small {
+    font-style: italic;
+    opacity: .8;
+    font-size: .7em;
+    font-weight: normal;
+}
+
+button {
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
 .message {
-    margin: 1em;
     border: solid 2px transparent;
     font-size: 1.2rem;
     padding: .5em 1em;
+    margin-bottom: 1rem;
 }
 
 .error {
@@ -68,13 +79,8 @@ main > * {
     width: 100%;
 }
 
-button {
-    -webkit-appearance: none;
-    cursor: pointer;
-}
-
 .album-grid button {
-    margin: 1em;
+    margin: 1rem;
     margin-top: 0;
     font-size: 1.3em;
     text-align: left;    
@@ -118,28 +124,46 @@ i {
     padding: .7em 1em;
 }
 
-.location {
+.info-card {
     font-weight: bolder;
-    /* min-width: 35%; */
-    padding: .75em;
-    padding-right: 2em;
-    font-size: 2rem;
+
+    padding: .3em .6em;
+    font-size: 1.8rem;
 
     margin: .5em;
-    margin-left: 0;
+    margin-left: .5em;
     
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0; 
+    /* border-top-left-radius: 0;
+    border-bottom-left-radius: 0;  */
 
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
 }
 
-.location > small {
-    font-style: italic;
-    opacity: .8;
-    font-size: .7em;
+
+
+.location {
+    display: flex;
+    padding: .75em;
 }
+
+.location span {
+    line-height: 30px;
+}
+
+.location i {
+    font-size: 1.1em;
+    margin-right: .35em;
+}
+
+
+
+.time {
+    line-height: 0;
+    margin-bottom: 1px;
+}
+
+
 
 .settings-form {
     padding: 1em;

@@ -13,6 +13,8 @@ var settings = JSON.parse(localStorage.getItem("settings") || "{}");
 settings.animationSpeed = settings.animationSpeed || 1000;// fallback
 settings.slideDuration = settings.slideDuration || 30000;// fallback
 
+var settingFileUrl = "/unsafe-app-settings.json";
+
 
 /**
  * @param {AppSettings} targetSettings 
@@ -21,7 +23,8 @@ settings.slideDuration = settings.slideDuration || 30000;// fallback
  */
 function validateSettings(targetSettings, onValid, onInvalid) {
 
-    if (targetSettings.immichServerUrl == undefined || targetSettings.immichServerUrl.length == 0) {
+
+    if (targetSettings.immichServerUrl == undefined || targetSettings.immichServerUrl.length == 0 || targetSettings.immichServerUrl.startsWith("https://")) {
         onInvalid();
         return;
     }
@@ -80,17 +83,34 @@ function showMessage(errorText, styleClass) {
 
 /**
  * @param {JQuery<HTMLElement>} elem 
+ * @param {number} speed 
  */
-function loadView(elem) {
+function loadView(elem, speed, useFade) {
 
-    elem.hide()
-    viewContainer.prepend(elem);
-    elem.fadeIn(settings.animationSpeed);
-
-    if (viewContainer.children().length > 1) {
-        viewContainer.children().last().fadeOut(settings.animationSpeed, function () { this.remove() })
+    if (speed == undefined) {
+        speed = 200;
     }
 
+    if (useFade == undefined) {
+        useFade = true;
+    }
+
+    if (viewContainer.children().length == 0) {
+        elem.hide();
+        viewContainer.prepend(elem);
+        elem.slideDown(speed);
+        return;
+    }
+
+    var children = viewContainer.children();
+    
+    if (useFade) {
+        children.fadeOut(speed, function () { this.remove() })
+    } else {
+        children.slideToggle(speed, function () { this.remove() })
+    }
+
+    viewContainer.prepend(elem);
 }
 
 /**
@@ -115,8 +135,17 @@ function createAlbumGrid(onComplete) {
 
         albums.forEach(function (album) {
 
-            var button = $(`<button class="glass-tile"><i class="bi bi-images"></i> ${album.albumName}<br><small>${album.assetCount} assets</small></button>`)
-                .click(function () { loadAlbum(album.id) })
+            var button = $(`
+                <button class="glass-tile">
+                    <i class="bi bi-images"></i> ${album.albumName}<br>
+                    <small>${album.assetCount} assets</small>
+                </button>
+                `)
+                .click(function () { 
+                    settings.mostRecentAlbumId = album.id;
+                    saveSettings(settings);
+                    initAlbumViewingMode(album.id) 
+                })
 
             buttonGrid.append(button)
 
@@ -128,77 +157,146 @@ function createAlbumGrid(onComplete) {
 }
 
 function createSingleAssetView(asset) {
-    if (asset == undefined || asset.type == "VIDEO") {
-        return $("<div>");
+
+    if (asset == undefined) {
+        return;
     }
 
-    var srcUrl = url(`/api/assets/${asset.id}/thumbnail`, "size=preview")
-    var img = $("<div>")
-        .addClass("img content-bottom")
-        .css('background-image', 'url(' + srcUrl + ')');
+    var srcUrl = url(`/api/assets/${asset.id}/thumbnail`, "size=preview");
+    var img = $(`<div class="img content-bottom">`).css('background-image', 'url(' + srcUrl + ')');
 
-    if (asset.exifInfo && asset.exifInfo.city && asset.exifInfo.country) {
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ]
 
-        var year = new Date(asset.localDateTime).getFullYear()
-        var locationInfo = $(`<h3 class="location glass-tile"><i class="bi bi-geo-fill"></i> ${asset.exifInfo.city}<br><small>${asset.exifInfo.country}, ${year}</small></h3>`)
+    var year = new Date(asset.localDateTime).getFullYear();
+    var month = months[new Date(asset.localDateTime).getMonth()];
 
-        img.append(locationInfo);
+    if (asset.exifInfo == undefined || asset.exifInfo.city == undefined || asset.exifInfo.country == undefined) {
+        
+        var infoCard = $(`
+        <h3 class="glass-tile info-card">
+            <small class="time">${month} ${year}</small>
+        </h3>`);
 
+        return img.append(infoCard);
     }
 
-    // setTimeout(function() { img.css("background-size", "110%") }, 1000)
 
-    return img;
+    var infoCard = $(`
+    <h3 class="glass-tile info-card location">
+        <i class="bi bi-geo-fill"></i> 
+        <span>
+            ${asset.exifInfo.city}<br>
+            <small>${asset.exifInfo.country},</small> <small>${month} ${year}</small>
+        </span>
+    </h3>`);
+
+    return img.append(infoCard);
 }
 
 var refreshAssetsIntervalId = 0;
 var loadNextAssetIntervalId = 0;
-function clearAlbumIntervals() {
+
+var previousSlideButton = $('#previous-slide').hide();
+var nextSlideButton = $('#next-slide').hide();
+
+
+function cleanupAlbumViewingMode() {
     clearInterval(refreshAssetsIntervalId);
     clearInterval(loadNextAssetIntervalId);
+
+    previousSlideButton.hide();
+    nextSlideButton.hide();
 }
 
 /**
  * @param {string} albumId 
  */
-function loadAlbum(albumId) {
-    settings.mostRecentAlbumId = albumId;
-    saveSettings(settings);
+function initAlbumViewingMode(albumId) {
+    cleanupAlbumViewingMode();
 
     var assets = [];
-    var assetsPointer = 0;
+    var currentAssetIndex = 0;
 
     /**
      * @param {() => void} onComplete 
      */
-    function fetchAlbumAssets(onComplete) {
-        var albumUrl = url("/api/albums/" + albumId);
-        $.get(albumUrl, function (album) {
+    function refreshAlbumAssets(onComplete) {
+        $.get( url(`/api/albums/${albumId}`), function(album) {
             album.assets.sort(function () { return 0.5 - Math.random() });
             assets = album.assets;
-            if (onComplete) {
-                onComplete()
-            }
+            onComplete()
         })
         .catch(function () {
             showMessage("Failed to fetch album assets, please check your settings and network connection", "error");
-            createSettingsFormView(loadView);
+            // createSettingsFormView(loadView);
         });
     }
 
-    clearAlbumIntervals();
-
-    refreshAssetsIntervalId = setInterval(function () { fetchAlbumAssets() }, 300000)// 5 minutes = 300_000
-    loadNextAssetIntervalId = setInterval(function () {
-        if (assets.length <= 0) {
-            return;
+    function loadCurrentAssetAsView() {
+        console.log(`loading asset with index ${currentAssetIndex}`);
+        
+        if (currentAssetIndex < 0) {
+            currentAssetIndex = assets.length - 1;
         }
 
-        assetsPointer = ++assetsPointer % assets.length
-        loadView(createSingleAssetView(assets[assetsPointer]));
-    }, settings.slideDuration);
+        currentAssetIndex = currentAssetIndex % assets.length;
+        if (assets.length <= 0) { return; }
 
-    fetchAlbumAssets(function () { loadView(createSingleAssetView(assets[assetsPointer])); });
+        var asset = assets[currentAssetIndex];
+        var view = createSingleAssetView(asset);
+        
+        // var useFadeAnimation = asset.exifInfo == undefined || asset.exifInfo.exifImageWidth > asset.exifInfo.exifImageHeight;
+        loadView(view, settings.animationSpeed, true);
+    }
+
+    function setAlbumIntervals() {
+        
+        refreshAssetsIntervalId = setInterval(refreshAlbumAssets, 300000)// 5 minutes = 300_000
+        loadNextAssetIntervalId = setInterval(function() {
+            currentAssetIndex++;
+            loadCurrentAssetAsView();
+        }, settings.slideDuration);
+
+    }
+
+    refreshAlbumAssets(loadCurrentAssetAsView);
+    setAlbumIntervals();
+
+    previousSlideButton.on("click", function() {
+        currentAssetIndex--;
+        loadCurrentAssetAsView();
+
+        cleanupAlbumViewingMode();
+        setAlbumIntervals();
+
+        previousSlideButton.fadeIn(200);
+        nextSlideButton.fadeIn(200);
+    }).fadeIn(200)
+
+    nextSlideButton.on("click", function() {
+        currentAssetIndex++;
+        loadCurrentAssetAsView(); 
+
+        cleanupAlbumViewingMode();
+        setAlbumIntervals();
+        
+        previousSlideButton.fadeIn(200);
+        nextSlideButton.fadeIn(200);
+    }).fadeIn(200)
+
 }
 
 /**
@@ -261,7 +359,7 @@ function createSettingsFormView(onComplete) {
                 initNormalStartup();
             },
             function () {// invalid
-                console.log("settings are not valid");
+                console.error("settings are not valid");
                 showMessage("Settings are not valid", "error");
             }
         )
@@ -286,21 +384,21 @@ function initNormalStartup() {
 
     albumsButton
         .click(function () {
-            clearAlbumIntervals();
+            cleanupAlbumViewingMode();
             createAlbumGrid(loadView);
         })
         .fadeIn(settings.animationSpeed)
 
     settingsButton
         .click(function () {
-            clearAlbumIntervals();
+            cleanupAlbumViewingMode();
             createSettingsFormView(loadView);
         })
         .fadeIn(settings.animationSpeed)
 
     if (settings.mostRecentAlbumId && settings.mostRecentAlbumId.length > 0) {
         console.log("Recently opened album found, automatically opening");
-        loadAlbum(settings.mostRecentAlbumId);
+        initAlbumViewingMode(settings.mostRecentAlbumId);
         return;
     }
 
@@ -315,28 +413,28 @@ validateSettings(
         initNormalStartup()
 
         // perform some extra checks to warn the user about potential settings file being left exposed
-        $.get("/app-settings.json", function (fetchedSettings) {
+        $.get(settingFileUrl, function (fetchedSettings) {
             console.log("settings from server found while local settings already exist, this file should be remove to prevent leaking api keys", fetchedSettings);
-            showMessage("Settings file is still present on the server (/app-settings.json). Remove this file ASAP to prevent leaking your api key", "error");
+            showMessage(`Settings file is still present on the server (${settingFileUrl}). Remove this file ASAP to prevent leaking your api key`, "error");
         });
     },
 
     function () {// invalid, try to fetch from server
-        console.log("invalid local settings, trying to fetch from the server on /app-settings.json");
+        console.log(`invalid local settings, trying to fetch from the server on ${settingFileUrl}`);
 
-        $.get("/app-settings.json", function (fetchedSettings) {
+        $.get(settingFileUrl, function (fetchedSettings) {
             console.log("settings from server", fetchedSettings);
             settings = fetchedSettings;
 
             validateSettings(fetchedSettings,
                 function () {// valid settings from server
                     console.log("valid settings");
-                    showMessage("Settings file successfully imported from /app-settings.json. Dont forget to remove this file to prevent leaking the api key", "success");
+                    showMessage(`Settings file successfully imported from ${settingFileUrl}. Dont forget to remove this file to prevent leaking the api key`, "success");
                     saveSettings(settings);
                     initNormalStartup();
                 },
                 function() {// (partially) invalid settings from the server
-                    showMessage("Settings file partially imported from /app-settings.json, please review the config and press save when everything is allright. Dont forget to remove this settings file afterwards", "success");
+                    showMessage(`Settings file partially imported from ${settingFileUrl}, please review the config and press save when everything is allright. Dont forget to remove this settings file afterwards`, "success");
                     initForcedFirstSetup()
                 }
             )
