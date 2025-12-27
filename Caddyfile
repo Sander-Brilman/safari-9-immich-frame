@@ -9,6 +9,8 @@ http:// {
 		root ./Safari9ImmichKiosk/
 	}
 
+	encode
+
 	# 	reverse_proxy /api/* {
 	# 		to https://immich.sanderbrilman.nl
 	# 	}

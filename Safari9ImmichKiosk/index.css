@@ -131,8 +131,8 @@ i {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0; 
 
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .location > small {

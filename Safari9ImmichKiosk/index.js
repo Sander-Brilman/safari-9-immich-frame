@@ -116,9 +116,7 @@ function createAlbumGrid(onComplete) {
         albums.forEach(function (album) {
 
             var button = $(`<button class="glass-tile"><i class="bi bi-images"></i> ${album.albumName}<br><small>${album.assetCount} assets</small></button>`)
-                .click(function () {
-                    loadAlbum(album.id)
-                })
+                .click(function () { loadAlbum(album.id) })
 
             buttonGrid.append(button)
 
@@ -181,6 +179,10 @@ function loadAlbum(albumId) {
             if (onComplete) {
                 onComplete()
             }
+        })
+        .catch(function () {
+            showMessage("Failed to fetch album assets, please check your settings and network connection", "error");
+            createSettingsFormView(loadView);
         });
     }
 
@@ -202,7 +204,7 @@ function loadAlbum(albumId) {
 /**
  * @param {(elem:JQuery<HTMLElement>) => void} onComplete 
  */
-function createSettingsView(onComplete) {
+function createSettingsFormView(onComplete) {
 
     var settingsForm = $(`
     <form class="settings-form">
@@ -217,12 +219,12 @@ function createSettingsView(onComplete) {
         </label>
 
         <label class="glass-tile field">
-            <span>Slide duration</span>
+            <span>Slide duration (ms)</span>
             <input type="number" id="slide-duration">
         </label>
 
         <label class="glass-tile field">
-            <span>Animation Speed</span>
+            <span>Animation Speed (ms)</span>
             <input type="number" id="animation-speed">
         </label>
 
@@ -239,7 +241,6 @@ function createSettingsView(onComplete) {
         e.preventDefault();
         console.log("form submit");
 
-
         /** @type {AppSettings} */
         var newSettings = {
             animationSpeed: animationSpeedInput.val().trim(),
@@ -255,10 +256,9 @@ function createSettingsView(onComplete) {
 
                 settings = newSettings;
                 saveSettings(settings);
-
-                messageBox.fadeOut(settings.animationSpeed);
-                albumsButton.fadeIn(settings.animationSpeed);
                 showMessage("Settings saved!", "success");
+
+                initNormalStartup();
             },
             function () {// invalid
                 console.log("settings are not valid");
@@ -278,7 +278,7 @@ function initForcedFirstSetup() {
     console.log("forced first setup");
 
     albumsButton.fadeOut(settings.animationSpeed)
-    createSettingsView(loadView);
+    createSettingsFormView(loadView);
 }
 
 function initNormalStartup() {
@@ -294,7 +294,7 @@ function initNormalStartup() {
     settingsButton
         .click(function () {
             clearAlbumIntervals();
-            createSettingsView(loadView);
+            createSettingsFormView(loadView);
         })
         .fadeIn(settings.animationSpeed)
 
@@ -340,6 +340,9 @@ validateSettings(
                     initForcedFirstSetup()
                 }
             )
-        })
+        }).catch(function () {// failed to fetch from server, force first setup
+            console.log("no settings found on the server, forcing first setup");
+            initForcedFirstSetup()
+        });
     }
 );
