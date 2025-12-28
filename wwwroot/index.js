@@ -110,7 +110,7 @@ function saveState() {
 function validateSettings(targetSettings, onValid, onInvalid) {
 
 
-    if (targetSettings.immichServerUrl == undefined || targetSettings.immichServerUrl.length == 0 || targetSettings.immichServerUrl.startsWith("https://")) {
+    if (targetSettings.immichServerUrl == undefined || targetSettings.immichServerUrl.length == 0) {
         onInvalid();
         return;
     }
@@ -120,7 +120,11 @@ function validateSettings(targetSettings, onValid, onInvalid) {
         return;
     }
 
-
+    $.get(apiUrl("/albums"), function(response) {
+        onValid()
+    }).catch(function(e) {
+        onInvalid()
+    })
 
     if (targetSettings.animationSpeed == undefined || parseInt(targetSettings.animationSpeed) == NaN) {
         onInvalid();
