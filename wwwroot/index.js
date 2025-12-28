@@ -468,7 +468,7 @@ class SettingsView extends ViewBase {
 
     getViewContent(onComplete) {
         var thisRef = this;
-        $.get('/view/settings.html', function (view) {
+        $.get('view/settings.html', function (view) {
 
             view = $(view);
 
