@@ -1,7 +1,7 @@
 <div>
 
     <form id="settings-form">
-        <h2>Slideshow settings</h2>
+        <h2><i class="bi bi-images"></i> Slideshow settings</h2>
         <label class="glass-tile field">
             <img src="asset/immich-logo.png" width="30" height="30" alt="immich logo">
             <i class="bi bi-link-45deg"></i>
@@ -42,8 +42,9 @@
     </form>
 
     <form id="import-form">
-        <h2><i class="bi bi-download"></i> Import settings from url</h2>
-        <p>import the settings from a remote json file. Examples can be found in the project documentation</p>
+        <h2><i class="bi bi-download"></i> Import settings</h2>
+        <p>import the settings from a (remote) json input. Examples can be found in the project documentation</p>
+
         <label class="glass-tile field">
             <i class="bi bi-filetype-json"></i>
             <i class="bi bi-link-45deg"></i>
@@ -53,7 +54,15 @@
             </span>
         </label>
 
-        <button class="glass-tile" type="submit"><i class="bi bi-download"></i> Import from url</button>
+        <label class="glass-tile field">
+            <i class="bi bi-braces"></i>
+            <span>
+                Direct json text:
+                <textarea rows="6" id="json-text"></textarea>
+            </span>
+        </label>
+
+        <button class="glass-tile" type="submit"><i class="bi bi-download"></i> Import</button>
     </form>
 
     <form onsubmit="event.preventDefault()">
@@ -78,8 +87,12 @@
 
         margin: 1em;
         border: solid 1px grey;
-        border-radius: 5px;
+        border-radius: 6px;
 
+    }
+
+    p {
+        margin-bottom: 1.5em;
     }
 
     label {
@@ -87,6 +100,11 @@
         margin-bottom: 1em;
         display: flex;
         align-items: center;
+
+    }
+
+    label + p {
+        margin-top: -.5em;
     }
 
     label span {
@@ -95,6 +113,7 @@
         color: rgb(214, 214, 214);
     }
 
+    label textarea,
     label input {
         display: block;
         width: 100%;

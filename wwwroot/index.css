@@ -16,7 +16,10 @@ body {
     color: whitesmoke;
 }
 
-p,h1,h2,h3 {
+p,
+h1,
+h2,
+h3 {
     margin-top: 0;
 }
 
@@ -25,7 +28,7 @@ header {
     margin-bottom: 1rem;
 }
 
-header > button {
+header>button {
     margin-right: 10px;
     font-size: 1.2rem;
     -webkit-backdrop-filter: none;
@@ -63,6 +66,7 @@ i {
     padding: .5em 1em;
     margin: .5em;
     margin-bottom: 1rem;
+    border-radius: 6px;
 
 }
 
@@ -99,7 +103,7 @@ i {
     margin: 1rem;
     margin-top: 0;
     font-size: 1.3em;
-    text-align: left;    
+    text-align: left;
     -webkit-backdrop-filter: none;
 }
 
@@ -113,7 +117,7 @@ i {
 
 
 
-.slide-show-container > * {
+.slide-show-container>* {
     position: absolute;
     left: 0;
     top: 0;
@@ -160,7 +164,7 @@ i {
 
     margin: .5em;
     margin-left: .5em;
-    
+
     /* border-top-left-radius: 0;
     border-bottom-left-radius: 0;  */
 
@@ -195,9 +199,3 @@ i {
     line-height: 0;
     margin-bottom: 1px;
 }
-
-
-
-
-
-

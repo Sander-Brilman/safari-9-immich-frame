@@ -10,7 +10,7 @@ class AppSettings {
 class AppState {
     constructor() {
         this.mostRecentAlbumId = "";
-        this.configFileUrl = "http://";
+        this.configFileUrl = "";
     }
 }
 
@@ -509,24 +509,40 @@ class SettingsView extends ViewBase {
 
 
             var importUrlInput = view.find("#import-url").val(state.configFileUrl);
-
+            var jsonTextInput = view.find('#json-text');
             view.find("form#import-form").submit(function (e) {
                 console.log("import form submit");
                 e.preventDefault();
 
-                var url = importUrlInput.val();
+                if (jsonTextInput.val().length > 0) {
+                    try {
+                        var newSettings = JSON.parse(jsonTextInput.val());
+                        validateSettings(newSettings,
+                            function() {
+                                settings = newSettings;
+    
+                                saveSettings();
+                                showView(new SettingsView(true));
+    
+                                messageBox.showSuccess("Settings imported successfully!");
+                            },
+                            function() {
+                                messageBox.showError(`Failed to import settings from json input.`)
+                            }
+                        );
+                    } catch (error) {
+                        messageBox.showError(`Failed to import settings from json input, reason: ${error.message}`)
+                    }    
+                    return;
+                }
 
-                state.configFileUrl = url;
+                state.configFileUrl = importUrlInput.val();
                 saveState();
 
-                $.get(url, function (fetchedSettings) {
+                $.get(state.configFileUrl, function (fetchedSettings) {
                     validateSettings(fetchedSettings,
                         function () {// valid
-                            console.log("new settings", fetchedSettings);
-
                             settings = fetchedSettings;
-
-                            console.log("new settings", settings);
 
                             saveSettings();
                             showView(new SettingsView(true));
