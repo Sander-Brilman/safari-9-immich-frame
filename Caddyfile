@@ -1,6 +1,7 @@
+# this file is meant for development, when using this in production remove the headers section!.
 http:// {
 	file_server {
-		root ./safari-9-immich-kiosk/
+		root ./wwwroot/
 	}
 
 	encode

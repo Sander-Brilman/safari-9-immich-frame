@@ -16,8 +16,11 @@ body {
     color: whitesmoke;
 }
 
+p,h1,h2,h3 {
+    margin-top: 0;
+}
+
 header {
-    min-height: 200px;
     padding: 1em;
     margin-bottom: 1rem;
 }
@@ -32,15 +35,6 @@ main {
     position: relative;
 }
 
-main > * {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-
-
 small {
     font-style: italic;
     opacity: .8;
@@ -51,24 +45,46 @@ small {
 button {
     -webkit-appearance: none;
     cursor: pointer;
+    font-size: 1rem;
+    margin-right: .5em;
 }
+
+i {
+    font-size: .9em;
+    margin-right: .3em;
+}
+
+
+
 
 .message {
     border: solid 2px transparent;
     font-size: 1.2rem;
     padding: .5em 1em;
+    margin: .5em;
     margin-bottom: 1rem;
+
 }
 
-.error {
+.message.error {
     color: firebrick;
     border-color: firebrick;
 }
 
-.success {
+.message.success {
     color: green;
     border-color: green;
 }
+
+.message.info {
+    color: dodgerblue;
+    border-color: dodgerblue;
+}
+
+
+
+
+
 
 .album-grid {
     display: flex;
@@ -87,11 +103,6 @@ button {
     -webkit-backdrop-filter: none;
 }
 
-i {
-    font-size: .9em;
-    margin-right: .3em;
-}
-
 .album-grid button small {
     font-size: .8em;
     font-style: italic;
@@ -99,9 +110,27 @@ i {
 }
 
 
+
+
+
+.slide-show-container > * {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+
+
 .img {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
     background-size: cover;
-    /* background-size: 100%; */
     background-position: center;
     background-repeat: no-repeat;
 
@@ -109,11 +138,10 @@ i {
 }
 
 .content-bottom {
-    display: flex;
-    flex-direction: column;
     justify-content: flex-end;
-    align-items: flex-start;
 }
+
+
 
 .glass-tile {
     border: 0;
@@ -142,6 +170,9 @@ i {
 
 
 
+
+
+
 .location {
     display: flex;
     padding: .75em;
@@ -158,6 +189,8 @@ i {
 
 
 
+
+
 .time {
     line-height: 0;
     margin-bottom: 1px;
@@ -165,30 +198,6 @@ i {
 
 
 
-.settings-form {
-    padding: 1em;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
 
-.settings-form > label {
-    width: 100%;
-    margin-bottom: 1em;
-}
 
-.settings-form > label > span {
-    font-size: .8em;
-    opacity: .8;
-} 
 
-.settings-form > label > input{
-    display: block;
-    width: 100%;
-    background: none;
-    font-size: 1rem;
-    padding: .3em;
-    border: 0;
-    border-bottom: dashed 2px grey;
-    color: white;
-}
