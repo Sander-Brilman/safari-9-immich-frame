@@ -278,7 +278,7 @@ class AlbumSlideShowView extends ViewBase {
     fetchAssetForCache(assetIndex) {
         assetIndex = this.loopAssetIndex(assetIndex);
         var assetId = this.assets[assetIndex].id;
-        $.get(apiUrl(`/assets/${assetId}/thumbnail`, "size=preview"), function() { });
+        $.get(apiUrl(`/assets/${assetId}/thumbnail`, "size=preview"), function () { });
     }
 
     createSingleAssetView(asset) {
@@ -385,8 +385,6 @@ class AlbumSlideShowView extends ViewBase {
     }
 
     addAssetToViewStack(assetIndex) {
-        console.log(`loading asset with index ${assetIndex}`);
-
         if (this.assets.length <= 0) { return; }
 
         assetIndex = this.loopAssetIndex(assetIndex);
@@ -408,7 +406,7 @@ class AlbumSlideShowView extends ViewBase {
         this.refreshAssetsIntervalId = setInterval(this.refreshAssets_Then, 300000)// 5 minutes = 300_000
         this.loadNextAssetIntervalId = setInterval(function () {
 
-            thisRef.preFetchTimeoutId = setTimeout(function() {
+            thisRef.preFetchTimeoutId = setTimeout(function () {
                 thisRef.removeTopAssetFromViewStack();
             }, settings.slideDuration / 3);
 
@@ -427,7 +425,7 @@ class AlbumSlideShowView extends ViewBase {
         var thisRef = this;
         this.container = $(`<div class="slide-show-container">`)
 
-        this.refreshAssets_Then(function () { 
+        this.refreshAssets_Then(function () {
             thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
         });
         this.resetIntervals();
@@ -467,10 +465,10 @@ class SettingsView extends ViewBase {
     }
 
     getViewContent(onComplete) {
-        var thisRef = this;
-        $.get('view/settings.html', function (view) {
+        $.get('view/settings.html', function (viewRaw) {
 
-            view = $(view);
+            /** @type {JQuery<HTMLElement>} */
+            var view = $(viewRaw);
 
             var serverUrlInput = view.find("#immich-server-url").val(settings.immichServerUrl);
             var apiKeyInput = view.find("#immich-api-key").val(settings.immichApiKey);
@@ -509,6 +507,7 @@ class SettingsView extends ViewBase {
                 )
             })
 
+
             var importUrlInput = view.find("#import-url").val(state.configFileUrl);
 
             view.find("form#import-form").submit(function (e) {
@@ -539,12 +538,24 @@ class SettingsView extends ViewBase {
                         }
                     );
                 })
-                .catch(function(e) {
-                    messageBox.showError(`Failed to import settings file, reason: ${e.statusText} ${e.responseText}`)
-                })
+                    .catch(function (e) {
+                        messageBox.showError(`Failed to import settings file, reason: ${e.statusText} ${e.responseText}`)
+                    })
             })
 
-            onComplete($(view))
+
+            var enableDevtoolsInput = view.find("#enable-devtools").attr("checked", localStorage.getItem("enableDevtools") == "true");
+
+            enableDevtoolsInput.on("change", function (e) {
+                if (enableDevtoolsInput.is(":checked")) {
+                    localStorage.setItem("enableDevtools", "true")
+                } else {
+                    localStorage.removeItem("enableDevtools");
+                }
+                window.location.reload();
+            })
+
+            onComplete(view)
         })
     }
 }

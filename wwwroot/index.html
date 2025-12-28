@@ -6,12 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes"><div class=""></div>
-    <title>Vite App</title>
+    <title>Sarari 9 Immich Kiosk</title>
 
     
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script>eruda.init();</script>
+    <script>
+        var isDevEnv = localStorage.getItem("enableDevtools") == "true";
+        if (isDevEnv) {
+            eruda.init();
+        }
+    </script>
 
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">

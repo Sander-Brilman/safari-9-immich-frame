@@ -1,25 +1,25 @@
 <div>
 
     <form id="settings-form">
-        <h2>Required settings</h2>
+        <h2>Slideshow settings</h2>
         <label class="glass-tile field">
-            <img src="/asset/immich-logo.png" width="30" height="30" alt="immich logo">
-            <i class="bi bi-link-45deg"></i> 
+            <img src="asset/immich-logo.png" width="30" height="30" alt="immich logo">
+            <i class="bi bi-link-45deg"></i>
             <span>
                 Immich server url:
                 <input type="text" id="immich-server-url">
             </span>
         </label>
-    
+
         <label class="glass-tile field">
-            <img src="/asset/immich-logo.png" width="30" height="30" alt="immich logo">
-            <i class="bi bi-key-fill"></i> 
+            <img src="asset/immich-logo.png" width="30" height="30" alt="immich logo">
+            <i class="bi bi-key-fill"></i>
             <span>
                 Immich api key
                 <input type="text" id="immich-api-key">
             </span>
         </label>
-    
+
         <label class="glass-tile field">
             <i class="bi bi-image"></i>
             <i class="bi bi-hourglass-split"></i>
@@ -28,7 +28,7 @@
                 <input type="number" id="slide-duration">
             </span>
         </label>
-    
+
         <label class="glass-tile field">
             <i class="bi bi-transparency"></i>
             <i class="bi bi-hourglass-split"></i>
@@ -37,23 +37,34 @@
                 <input type="number" id="animation-speed">
             </span>
         </label>
-    
+
         <button class="glass-tile" type="submit"><i class="bi bi-check-lg"></i> Save</button>
     </form>
-    
+
     <form id="import-form">
         <h2><i class="bi bi-download"></i> Import settings from url</h2>
         <p>import the settings from a remote json file. Examples can be found in the project documentation</p>
         <label class="glass-tile field">
             <i class="bi bi-filetype-json"></i>
             <i class="bi bi-link-45deg"></i>
-            <span> 
+            <span>
                 config file url:
                 <input type="text" id="import-url">
             </span>
         </label>
-    
+
         <button class="glass-tile" type="submit"><i class="bi bi-download"></i> Import from url</button>
+    </form>
+
+    <form onsubmit="event.preventDefault()">
+        <h2><i class="bi bi-code-slash"></i> Advanced settings</h2>
+        <label class="glass-tile field">
+            <i class="bi bi-bug"></i>
+            <span>
+                Enable devtools
+                <input type="checkbox" id="enable-devtools">
+            </span>
+        </label>
     </form>
 </div>
 
@@ -71,20 +82,20 @@
 
     }
 
-    form label {
+    label {
         width: 100%;
         margin-bottom: 1em;
         display: flex;
         align-items: center;
     }
 
-    form label span {
+    label span {
         width: 100%;
         font-size: .8em;
         color: rgb(214, 214, 214);
     }
 
-    form label input {
+    label input {
         display: block;
         width: 100%;
         background: none;
@@ -93,6 +104,10 @@
         border: 0;
         border-bottom: dashed 2px grey;
         color: white;
+    }
+
+    label input[type=checkbox] {
+        width: 20px;
     }
 
     img {
@@ -109,9 +124,9 @@
         margin-right: 1rem;
     }
 
-    img + i,
-    label i + img,
-    label i + i {
+    img+i,
+    label i+img,
+    label i+i {
         margin-left: -.5em !important;
         margin-top: 1.4em !important;
         font-size: 1.15em;
