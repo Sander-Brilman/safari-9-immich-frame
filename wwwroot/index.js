@@ -142,7 +142,7 @@ function validateSettings(targetSettings, onValid, onInvalid) {
     // }).catch(function(e) {
     //     onInvalid()
     // })
-    
+
     onValid()
 }
 
@@ -276,12 +276,6 @@ class AlbumSlideShowView extends ViewBase {
         this.container;
     }
 
-    fetchAssetForCache(assetIndex) {
-        assetIndex = this.loopAssetIndex(assetIndex);
-        var assetId = this.assets[assetIndex].id;
-        $.get(apiUrl(`/assets/${assetId}/thumbnail`, "size=preview"), function () { });
-    }
-
     createSingleAssetView(asset) {
         if (asset == undefined) {
             return;
@@ -362,7 +356,8 @@ class AlbumSlideShowView extends ViewBase {
      */
     refreshAssets_Then(onComplete) {
         var thisRef = this;
-        $.get(apiUrl(`/albums/${this.albumId}`), function (album) {
+        var url = apiUrl(`/albums/${this.albumId}`);
+        $.get(url, function (album) {
             album.assets.sort(function () { return 0.5 - Math.random() });
             thisRef.assets = album.assets;
 
@@ -394,6 +389,7 @@ class AlbumSlideShowView extends ViewBase {
         var view = this.createSingleAssetView(asset);
 
         this.container.prepend(view);
+        view[0].scrollIntoView();
     }
 
     removeTopAssetFromViewStack() {
@@ -404,7 +400,7 @@ class AlbumSlideShowView extends ViewBase {
         var thisRef = this;
         this.remove();
 
-        this.refreshAssetsIntervalId = setInterval(this.refreshAssets_Then, 300000)// 5 minutes = 300_000
+        this.refreshAssetsIntervalId = setInterval(function () { thisRef.refreshAssets_Then() }, 120000)// 2 minutes = 120000
         this.loadNextAssetIntervalId = setInterval(function () {
 
             thisRef.preFetchTimeoutId = setTimeout(function () {
@@ -519,23 +515,23 @@ class SettingsView extends ViewBase {
                     try {
                         var newSettings = JSON.parse(jsonTextInput.val());
                         validateSettings(newSettings,
-                            function() {
+                            function () {
                                 settings = newSettings;
-    
+
                                 saveSettings();
                                 showView(new SettingsView(true));
-    
+
                                 messageBox.showSuccess("Settings imported successfully!");
                             },
-                            function() {
+                            function () {
                                 messageBox.showError(`Failed to import settings from json input.`)
                             }
                         );
                     } catch (error) {
                         console.error(error);
-                        
+
                         messageBox.showError(`Failed to import settings from json input, reason: ${error.message}`)
-                    }    
+                    }
                     return;
                 }
 
