@@ -137,11 +137,13 @@ function validateSettings(targetSettings, onValid, onInvalid) {
         targetSettings.slideDuration = parseInt(targetSettings.slideDuration);
     }
 
-    $.get(targetSettings.immichServerUrl, function(response) {
-        onValid()
-    }).catch(function(e) {
-        onInvalid()
-    })
+    // $.get(targetSettings.immichServerUrl, function(response) {
+    //     onValid()
+    // }).catch(function(e) {
+    //     onInvalid()
+    // })
+    
+    onValid()
 }
 
 
