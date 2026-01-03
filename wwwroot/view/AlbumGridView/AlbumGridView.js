@@ -35,7 +35,7 @@ class AlbumGridView extends ViewBase {
                     </button>
                     `)
                     .click(function () {
-                        thisRef.stateRepo.get().mostRecentAlbumId = album.id;
+                        thisRef.stateRepo.getInstance().mostRecentAlbumId = album.id;
                         thisRef.stateRepo.save();
                         openView(new AlbumSlideShowView(album.id, thisRef.immichClient))
                     })

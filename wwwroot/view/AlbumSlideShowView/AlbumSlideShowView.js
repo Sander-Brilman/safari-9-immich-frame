@@ -49,7 +49,7 @@ class AlbumSlideShowView extends ViewBase {
 
         var img = $(`<div class="img">`)
             .css('background-image', 'url(' + srcUrl + ')')
-            .css('transition-duration', `${settingsRepo.get().slideDuration * 2}ms`);
+            .css('transition-duration', `${settingsRepo.getInstance().slideDuration * 2}ms`);
 
         slideContainer.append(img);
 
@@ -145,7 +145,7 @@ class AlbumSlideShowView extends ViewBase {
     }
 
     removeTopAssetFromViewStack() {
-        var settings = settingsRepo.get();
+        var settings = settingsRepo.getInstance();
         this.slideShowContainer.children().last().fadeOut(settings.animationSpeed, function () { this.remove() });
 
     }
@@ -154,7 +154,7 @@ class AlbumSlideShowView extends ViewBase {
 
 
     setIntervals() {
-        var settings = settingsRepo.get();
+        var settings = settingsRepo.getInstance();
         var Interval2Minutes = 120000;
         var thisRef = this;
 

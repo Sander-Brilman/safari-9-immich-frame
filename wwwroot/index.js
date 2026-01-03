@@ -50,12 +50,12 @@ function initForcedSettingsView() {
 
 function initNormalStartup() {
 
-    var immichClient = ImmichClient.fromSettings(settingsRepo.get());
+    var immichClient = ImmichClient.fromSettings(settingsRepo.getInstance());
 
-    var state = stateRepo.get();
+    var state = stateRepo.getInstance();
     var gridView = new AlbumGridView(stateRepo, immichClient);
     var settingsView = new SettingsView(settingsRepo, stateRepo, function () {
-        immichClient = ImmichClient.fromSettings(settingsRepo.get());
+        immichClient = ImmichClient.fromSettings(settingsRepo.getInstance());
         alertView.showSuccess("Settings saved!");
     })
 
@@ -73,10 +73,10 @@ function initNormalStartup() {
 }
 
 
-console.log(settingsRepo.get());
+console.log(settingsRepo.getInstance());
 
 function init() {
-    settingsRepo.get().validate(
+    settingsRepo.getInstance().validate(
         function () {// valid settings, statup as normal
             console.log(`local settings valid, normal startup`);
             initNormalStartup()

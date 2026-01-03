@@ -19,7 +19,7 @@ class SettingsView extends ViewBase {
      */
     _initSettingsForm(form) {
         var thisRef = this;
-        var settings = this.settingsRepo.get();
+        var settings = this.settingsRepo.getInstance();
 
 
         var serverUrlInput = form.find("#immich-server-url").val(settings.immichServerUrl);
@@ -60,7 +60,7 @@ class SettingsView extends ViewBase {
      */
     _initImportForm(form) {
         var thisRef = this;
-        var state = this.stateRepo.get();
+        var state = this.stateRepo.getInstance();
 
         var importUrlInput = form.find("#import-url").val(state.configFileUrl);
         var jsonTextInput = form.find('#json-text');
@@ -92,7 +92,7 @@ class SettingsView extends ViewBase {
                 return;
             }
 
-            thisRef.stateRepo.get().configFileUrl = importUrlInput.val().toString();
+            thisRef.stateRepo.getInstance().configFileUrl = importUrlInput.val().toString();
             thisRef.stateRepo.save();
 
             $.get(state.configFileUrl, function (fetchedSettings) {
