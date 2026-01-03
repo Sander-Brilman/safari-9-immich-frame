@@ -12,7 +12,7 @@ class AlertsView extends ViewBase {
      * @param {string} boostrapIconClass 
      */
     _constructNew(message, type, boostrapIconClass) {
-        const alertInstance = $(`
+        var alertInstance = $(`
         <div class="alert ${type}">
             <i class="bi bi-${boostrapIconClass}"></i>
             <p>${message}</p>
