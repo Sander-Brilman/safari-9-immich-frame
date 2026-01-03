@@ -64,11 +64,11 @@ class Settings {
             return Settings.fromObject(jsonParseResult);
         } catch (error) {
             console.error(error);
-            return this.default();
+            return this.defaultInstance();
         }
     }
 
-    static default() {
+    static defaultInstance() {
         return new Settings(
             "",
             "",
@@ -155,7 +155,7 @@ class SettingsRepository extends StorageRepository {
         if (this.instance != undefined) {
             this.instance = Settings.fromObject(this.instance);
         } else {
-            this.instance = Settings.default();
+            this.instance = Settings.defaultInstance();
         }
 
         return this.instance;
