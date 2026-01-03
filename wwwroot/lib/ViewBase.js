@@ -27,6 +27,10 @@ class ViewBase {
                 onComplete(thisRef.view);
             })
         })
+        .catch(function(e) {
+            console.error(e);
+            
+        })
     }
 
     /**

@@ -1,84 +1,82 @@
-<div>
-    <form id="settings">
-        <h2><i class="bi bi-images"></i> Slideshow settings</h2>
-        <label class="glass-tile field">
-            <img src="asset/immich-logo.png" width="30" height="30" alt="immich logo">
-            <i class="bi bi-link-45deg"></i>
-            <span>
-                Immich server url:
-                <input type="text" id="immich-server-url">
-            </span>
-        </label>
+<form id="settings">
+    <h2><i class="bi bi-images"></i> Slideshow settings</h2>
+    <label class="glass-tile field">
+        <img src="asset/immich-logo.png" width="30" height="30" alt="immich logo">
+        <i class="bi bi-link-45deg"></i>
+        <span>
+            Immich server url:
+            <input type="text" id="immich-server-url">
+        </span>
+    </label>
 
-        <label class="glass-tile field">
-            <img src="asset/immich-logo.png" width="30" height="30" alt="immich logo">
-            <i class="bi bi-key"></i>
-            <span>
-                Immich api key
-                <input type="text" id="immich-api-key">
-            </span>
-        </label>
+    <label class="glass-tile field">
+        <img src="asset/immich-logo.png" width="30" height="30" alt="immich logo">
+        <i class="bi bi-key"></i>
+        <span>
+            Immich api key
+            <input type="text" id="immich-api-key">
+        </span>
+    </label>
 
-        <label class="glass-tile field">
-            <i class="bi bi-image"></i>
-            <i class="bi bi-hourglass-split"></i>
-            <span>
-                Slide duration (ms)
-                <input type="number" id="slide-duration">
-            </span>
-        </label>
+    <label class="glass-tile field">
+        <i class="bi bi-image"></i>
+        <i class="bi bi-hourglass-split"></i>
+        <span>
+            Slide duration (ms)
+            <input type="number" id="slide-duration">
+        </span>
+    </label>
 
-        <label class="glass-tile field">
-            <i class="bi bi-transparency"></i>
-            <i class="bi bi-hourglass-split"></i>
-            <span>
-                Animation Speed (ms)
-                <input type="number" id="animation-speed">
-            </span>
-        </label>
+    <label class="glass-tile field">
+        <i class="bi bi-transparency"></i>
+        <i class="bi bi-hourglass-split"></i>
+        <span>
+            Animation Speed (ms)
+            <input type="number" id="animation-speed">
+        </span>
+    </label>
 
-        <button class="glass-tile" type="submit"><i class="bi bi-check-lg"></i> Save</button>
-    </form>
+    <button class="glass-tile" type="submit"><i class="bi bi-check-lg"></i> Save</button>
+</form>
 
-    <form id="import">
-        <h2><i class="bi bi-download"></i> Import settings</h2>
-        <p>import the settings from a (remote) json input. Examples can be found in the project documentation</p>
+<form id="import">
+    <h2><i class="bi bi-download"></i> Import settings</h2>
+    <p>import the settings from a (remote) json input. Examples can be found in the project documentation</p>
 
-        <label class="glass-tile field">
-            <i class="bi bi-filetype-json"></i>
-            <i class="bi bi-link-45deg"></i>
-            <span>
-                config file url:
-                <input type="text" id="import-url">
-            </span>
-        </label>
+    <label class="glass-tile field">
+        <i class="bi bi-filetype-json"></i>
+        <i class="bi bi-link-45deg"></i>
+        <span>
+            config file url:
+            <input type="text" id="import-url">
+        </span>
+    </label>
 
-        <label class="glass-tile field">
-            <i class="bi bi-text-left"></i>
-            <i class="bi bi-braces"></i>
-            <span>
-                Direct json text:
-                <textarea rows="6" id="json-text"></textarea>
-            </span>
-        </label>
+    <label class="glass-tile field">
+        <i class="bi bi-text-left"></i>
+        <i class="bi bi-braces"></i>
+        <span>
+            Direct json text:
+            <textarea rows="6" id="json-text"></textarea>
+        </span>
+    </label>
 
-        <button class="glass-tile" type="submit"><i class="bi bi-download"></i> Import</button>
-    </form>
+    <button class="glass-tile" type="submit"><i class="bi bi-download"></i> Import</button>
+</form>
 
-    <form id="advanced-settings">
-        <h2><i class="bi bi-code-slash"></i> Advanced settings</h2>
-        <label class="glass-tile field">
-            <i class="bi bi-bug"></i>
-            <i class="bi bi-bug-fill"></i>
-            <span>
-                Enable devtools (requires reload)
-                <input type="checkbox" id="enable-devtools">
-            </span>
-        </label>
+<form id="advanced-settings">
+    <h2><i class="bi bi-code-slash"></i> Advanced settings</h2>
+    <label class="glass-tile field">
+        <i class="bi bi-bug"></i>
+        <i class="bi bi-bug-fill"></i>
+        <span>
+            Enable devtools (requires reload)
+            <input type="checkbox" id="enable-devtools">
+        </span>
+    </label>
 
-        <button class="glass-tile" type="submit"><i class="bi bi-arrow-clockwise"></i> Reload page</button>
-    </form>
-</div>
+    <button class="glass-tile" type="submit"><i class="bi bi-arrow-clockwise"></i> Reload page</button>
+</form>
 
 <style>
     form {

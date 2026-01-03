@@ -21,7 +21,7 @@ class AlbumGridView extends ViewBase {
      */
     onInit(view, onComplete) {
 
-        var buttonGrid = view.find(`.album-grid`);
+        var buttonGrid = view.filter(`.album-grid`);
         var thisRef = this;
 
         $.get(this.immichClient.url("/albums"), function (albums) {

@@ -5,25 +5,27 @@ class AlertsView extends ViewBase {
     constructor() {
         super("view/AlertsView/AlertsView.html");
     }
-    
+
     /**
      * @param {string} message 
      * @param {string} type 
      * @param {string} boostrapIconClass 
      */
     _constructNew(message, type, boostrapIconClass) {
-        var alert = $(`
+        const alertInstance = $(`
         <div class="alert ${type}">
             <i class="bi bi-${boostrapIconClass}"></i>
             <p>${message}</p>
         </div>
         `);
 
-        this.view.append(alert);
+        this.view.append(alertInstance);
 
-        setTimeout(function() {
-            alert.fadeOut(5000, function() { alert.remove() })
-        });
+        setTimeout(function () {
+            console.log("here", alertInstance);
+            
+            alertInstance.remove();
+        }, 1000);
     }
 
     /**

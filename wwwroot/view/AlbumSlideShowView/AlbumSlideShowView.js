@@ -184,7 +184,7 @@ class AlbumSlideShowView extends ViewBase {
     onInit(view, onComplete) {
 
         var thisRef = this;
-        this.slideShowContainer = view.children("#slide-show-container")
+        this.slideShowContainer = view.filter("#slide-show-container")
 
         var previousButton = $(`<button class="glass-tile"><i class="bi bi-arrow-left"></i> Previous slide</button>`)
             .on("click", function () {
@@ -202,7 +202,7 @@ class AlbumSlideShowView extends ViewBase {
                 thisRef.removeTopAssetFromViewStack();
             })
 
-        view.find("#controls-container").append([previousButton, nextButton]);
+        view.filter("#controls-container").append([previousButton, nextButton]);
 
         this.setIntervals();
         this.refreshAssets_Then(function () {

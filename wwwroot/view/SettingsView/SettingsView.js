@@ -142,13 +142,13 @@ class SettingsView extends ViewBase {
     onInit(view, onComplete) {
 
 
-        var settingsForm = view.find("#settings");
+        var settingsForm = view.filter("#settings");
         this._initSettingsForm(settingsForm);
 
-        var importForm = view.find("#import");
+        var importForm = view.filter("#import");
         this._initImportForm(importForm);
 
-        var advancedSettingForm = view.find("#advanced-settings")
+        var advancedSettingForm = view.filter("#advanced-settings")
         this._initAdvancedSettingForm(advancedSettingForm);
 
         onComplete();

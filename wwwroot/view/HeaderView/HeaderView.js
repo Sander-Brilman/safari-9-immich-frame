@@ -19,11 +19,11 @@ class HeaderView extends ViewBase {
 
         var thisRef = this;
 
-        view.find("#show-albums").on("click", function () {
+        view.filter("#show-albums").on("click", function () {
             openView(thisRef.gridView);
         });
 
-        view.find("#show-settings").on("click", function () {
+        view.filter("#show-settings").on("click", function () {
             openView(thisRef.settingsView);
         });
 

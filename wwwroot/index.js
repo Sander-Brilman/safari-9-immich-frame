@@ -13,16 +13,22 @@ var alertView = new AlertsView();
 
 
 /**
+ * @param {JQuery<HTMLElement>} container 
  * @param {ViewBase} newViewObj 
+ * @param {() => void | undefined} [onComplete=undefined] 
  */
-function openViewInContainer(container, newViewObj) {
+function openViewInContainer(container, newViewObj, onComplete) {
     container.children().remove();
 
-    newViewObj.startViewInit(function (newView) { 
+    newViewObj.startViewInit(function (newView) {
         container.append(newView)
-        newView.on("remove", function () { 
-            newViewObj.onRemove(function() {}) 
+        newView.on("remove", function () {
+            newViewObj.onRemove(function () { });
         });
+
+        if (onComplete) {
+            onComplete();
+        }
     });
 }
 
@@ -38,7 +44,7 @@ function initForcedSettingsView() {
     console.log("forced first setup");
     alertView.showInfo("Fill in the settings below to use the photo frame")
 
-    
+
     openView(new SettingsView(settingsRepo, stateRepo, initNormalStartup));
 }
 
@@ -48,7 +54,7 @@ function initNormalStartup() {
 
     var state = stateRepo.get();
     var gridView = new AlbumGridView(stateRepo, immichClient);
-    var settingsView = new SettingsView(settingsRepo, stateRepo, function() {
+    var settingsView = new SettingsView(settingsRepo, stateRepo, function () {
         immichClient = ImmichClient.fromSettings(settingsRepo.get());
         alertView.showSuccess("Settings saved!");
     })
@@ -69,15 +75,19 @@ function initNormalStartup() {
 
 console.log(settingsRepo.get());
 
+function init() {
+    settingsRepo.get().validate(
+        function () {// valid settings, statup as normal
+            console.log(`local settings valid, normal startup`);
+            initNormalStartup()
+        },
 
-settingsRepo.get().validate(
-    function () {// valid settings, statup as normal
-        console.log(`local settings valid, normal startup`);
-        initNormalStartup()
-    },
+        function () {// invalid, try to fetch from server
+            console.log(`invaild local settings, forcing settings view`);
+            initForcedSettingsView()
+        }
+    );
+}
 
-    function () {// invalid, try to fetch from server
-        console.log(`invaild local settings, forcing settings view`);
-        initForcedSettingsView()
-    }
-);
+openViewInContainer(alertContainer, alertView, init);
+
