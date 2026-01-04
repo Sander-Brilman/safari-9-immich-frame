@@ -3,7 +3,7 @@
 class AlertsView extends ViewBase {
 
     constructor() {
-        super("view/AlertsView/AlertsView.html");
+        super("view/Alerts/Alerts.html");
     }
 
     /**

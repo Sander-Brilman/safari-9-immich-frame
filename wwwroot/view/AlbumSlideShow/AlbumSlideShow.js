@@ -11,7 +11,7 @@ var months = [
     "September",
     "October",
     "November",
-    "December",
+    "December"
 ]
 
 class AlbumSlideShowView extends ViewBase {
@@ -21,7 +21,7 @@ class AlbumSlideShowView extends ViewBase {
      * @param {ImmichClient} immichClient 
      */
     constructor(albumId, immichClient) {
-        super("view/AlbumSlideShowView/AlbumSlideShowView.html");
+        super("view/AlbumSlideShow/AlbumSlideShow.html");
         this.albumId = albumId;
 
         this.refreshAssetsIntervalId = 0;
@@ -39,52 +39,6 @@ class AlbumSlideShowView extends ViewBase {
         this.slideShowContainer
     }
 
-    createSingleAssetSlide(asset) {
-        if (asset == undefined || asset.exifInfo == undefined) {
-            return;
-        }
-        var slideContainer = $(`<div class="slide">`)
-
-        var srcUrl = this.immichClient.url(`/assets/${asset.id}/thumbnail`, "size=preview");
-
-        var img = $(`<div class="img">`)
-            .css('background-image', 'url(' + srcUrl + ')')
-            .css('transition-duration', `${settingsRepo.getInstance().slideDuration * 2}ms`);
-
-        slideContainer.append(img);
-
-        setTimeout(function () {
-            var newBackgroundSize = `scale(${settingsRepo.getInstance().zoomMultiplier})`;
-            img.css('transform', newBackgroundSize)
-        }, 100);
-
-
-        var year = new Date(asset.localDateTime).getFullYear();
-        var month = months[new Date(asset.localDateTime).getMonth()];
-
-        var hasLocationInfo = asset.exifInfo.city == undefined || asset.exifInfo.country == undefined;
-        if (hasLocationInfo) {
-            var infoCard = $(`
-                <h3 class="glass-tile info-card">
-                    <small class="time">${month} ${year}</small>
-                </h3>
-            `);
-
-            return slideContainer.append(infoCard);
-        }
-
-        var infoCard = $(`
-            <h3 class="glass-tile info-card location">
-                <i class="bi bi-geo-fill"></i> 
-                <span>
-                    ${asset.exifInfo.city}<br>
-                    <small>${asset.exifInfo.country},</small> <small>${month} ${year}</small>
-                </span>
-            </h3>
-        `);
-
-        return slideContainer.append(infoCard);
-    }
 
 
     /**
@@ -138,10 +92,15 @@ class AlbumSlideShowView extends ViewBase {
         assetIndex = this.loopAssetIndex(assetIndex);
 
         var asset = this.assets[assetIndex];
-        var slide = this.createSingleAssetSlide(asset);
 
-        this.slideShowContainer.prepend(slide);
-        slide[0].scrollIntoView();
+        var slideContainer = $(`<div class="slide">`);
+        var slide = new SingleAssetSlide(asset, this.immichClient, settingsRepo.getInstance());
+        
+        var thisRef = this;
+        openViewIn(slideContainer, slide, function() {
+            thisRef.slideShowContainer.prepend(slideContainer);
+            slideContainer[0].scrollIntoView();
+        });
     }
 
     removeTopAssetFromViewStack() {

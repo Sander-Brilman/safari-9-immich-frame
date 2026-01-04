@@ -12,31 +12,12 @@ var alertView = new AlertsView();
 
 
 
-/**
- * @param {JQuery<HTMLElement>} container 
- * @param {ViewBase} newViewObj 
- * @param {() => void | undefined} [onComplete=undefined] 
- */
-function openViewInContainer(container, newViewObj, onComplete) {
-    container.children().remove();
-
-    newViewObj.startViewInit(function (newView) {
-        container.append(newView)
-        newView.on("remove", function () {
-            newViewObj.onRemove(function () { });
-        });
-
-        if (onComplete) {
-            onComplete();
-        }
-    });
-}
 
 /**
  * @param {ViewBase} newViewObj 
  */
 function openView(newViewObj) {
-    openViewInContainer(mainViewContainer, newViewObj);
+    openViewIn(mainViewContainer, newViewObj);
 }
 
 
@@ -59,7 +40,7 @@ function initNormalStartup() {
         alertView.showSuccess("Settings saved!");
     })
 
-    openViewInContainer(headerContainer, new HeaderView(gridView, settingsView))
+    openViewIn(headerContainer, new HeaderView(gridView, settingsView))
 
     if (state.mostRecentAlbumId && state.mostRecentAlbumId.length > 0) {
         console.log("Recently opened album found, automatically opening");
@@ -89,5 +70,5 @@ function init() {
     );
 }
 
-openViewInContainer(alertContainer, alertView, init);
+openViewIn(alertContainer, alertView, init);
 

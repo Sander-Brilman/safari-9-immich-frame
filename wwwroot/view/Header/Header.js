@@ -5,7 +5,7 @@ class HeaderView extends ViewBase {
      * @param {SettingsView} settingsView 
      */
     constructor(gridView, settingsView) {
-        super("view/HeaderView/HeaderView.html");
+        super("view/Header/Header.html");
 
         this.gridView = gridView;
         this.settingsView = settingsView;

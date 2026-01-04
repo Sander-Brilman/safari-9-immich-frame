@@ -29,13 +29,9 @@ class StorageRepository {
     /**
      * @param {Object} obj 
      */
-    saveNew(obj) {
+    save(obj) {
         this.instance = obj;
         localStorage.setItem(this.localStorageKey, JSON.stringify(obj))
-    }
-
-    save() {
-        localStorage.setItem(this.localStorageKey, JSON.stringify(this.instance))
     }
 }
 
@@ -47,13 +43,11 @@ class Settings {
      * @param {object} object 
      */
     static fromObject(object) {
-        return new Settings(
-            object.immichApiKey,
-            object.immichServerUrl,
-            object.animationSpeed,
-            object.slideDuration,
-            object.zoomMultiplier
-        );
+        var instance = Settings.defaultInstance();
+        for (var key in instance) {
+            instance[key] = object[key];
+        }
+        return instance;
     }
 
     /**
@@ -74,12 +68,12 @@ class Settings {
             "",
             "",
             1000,
-            30000,
+            10000,
             1.25
-        )
+        );
     }
 
-    /**
+    /*
      * @param {string} immichApiKey 
      * @param {string} immichServerUrl 
      * @param {number} animationSpeed 

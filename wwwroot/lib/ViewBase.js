@@ -61,3 +61,24 @@ class ViewBase {
         onComplete()
     }
 }
+
+
+/**
+ * @param {JQuery<HTMLElement>} container 
+ * @param {ViewBase} newViewObj 
+ * @param {() => void | undefined} [onComplete=undefined] 
+ */
+function openViewIn(container, newViewObj, onComplete) {
+    container.children().remove();
+
+    newViewObj.startViewInit(function (newView) {
+        container.append(newView)
+        newView.on("remove", function () {
+            newViewObj.onRemove(function () { });
+        });
+
+        if (onComplete) {
+            onComplete();
+        }
+    });
+}

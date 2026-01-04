@@ -7,7 +7,7 @@ class AlbumGridView extends ViewBase {
      * @param {ImmichClient} immichClient 
      */
     constructor(stateRepo, immichClient) {
-        super("view/AlbumGridView/AlbumGridView.html");
+        super("view/AlbumGrid/AlbumGrid.html");
 
         this.stateRepo = stateRepo;
         this.immichClient = immichClient;
@@ -36,7 +36,7 @@ class AlbumGridView extends ViewBase {
                     `)
                     .click(function () {
                         thisRef.stateRepo.getInstance().mostRecentAlbumId = album.id;
-                        thisRef.stateRepo.save();
+                        thisRef.stateRepo.save(thisRef.stateRepo.getInstance());
                         openView(new AlbumSlideShowView(album.id, thisRef.immichClient))
                     })
 

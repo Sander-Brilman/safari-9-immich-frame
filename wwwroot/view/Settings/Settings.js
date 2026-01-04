@@ -7,7 +7,7 @@ class SettingsView extends ViewBase {
      * @param {() => void} onSettingsSaved 
      */
     constructor(settingsRepo, stateRepo, onSettingsSaved) {
-        super("view/SettingsView/SettingsView.html");
+        super("view/Settings/Settings.html");
 
         this.settingsRepo = settingsRepo;
         this.stateRepo = stateRepo;
@@ -47,7 +47,7 @@ class SettingsView extends ViewBase {
             newSettings.validate(
                 function () {// valid
                     console.log("new settings are valid and have been saved");
-                    settingsRepo.saveNew(newSettings);
+                    settingsRepo.save(newSettings);
                     thisRef.onSettingsSaved();
                 },
                 function () {// invalid
@@ -65,7 +65,7 @@ class SettingsView extends ViewBase {
         var state = this.stateRepo.getInstance();
 
         var importUrlInput = form.find("#import-url").val(state.configFileUrl);
-        var jsonTextInput = form.find('#json-text');
+        var jsonTextInput = form.find('#json-text').val(JSON.stringify(this.settingsRepo.getInstance()));
 
         form.submit(function (e) {
             console.log("import form submit");
@@ -79,7 +79,7 @@ class SettingsView extends ViewBase {
                         function () {
                             console.info("Settings imported successfully!");
 
-                            settingsRepo.saveNew(newSettings);
+                            settingsRepo.save(newSettings);
                             thisRef.onSettingsSaved();
                         },
                         function () {
@@ -95,7 +95,7 @@ class SettingsView extends ViewBase {
             }
 
             thisRef.stateRepo.getInstance().configFileUrl = importUrlInput.val().toString();
-            thisRef.stateRepo.save();
+            thisRef.stateRepo.save(thisRef.stateRepo.getInstance());
 
             $.get(state.configFileUrl, function (fetchedSettings) {
 
@@ -105,7 +105,7 @@ class SettingsView extends ViewBase {
                     function () {// valid
                         console.info("Settings imported successfully!");
 
-                        settingsRepo.saveNew(newSettings);
+                        settingsRepo.save(newSettings);
                         thisRef.onSettingsSaved();
                     },
                     function () {// invalid
@@ -129,7 +129,7 @@ class SettingsView extends ViewBase {
 
         enableDevtoolsInput.on("change", function (e) {
             if (enableDevtoolsInput.is(":checked")) {
-                localStorage.setItem("enableDevtools", "true")
+                // localStorage.setItem("enableDevtools", "true")
             } else {
                 localStorage.removeItem("enableDevtools");
             }
