@@ -46,7 +46,7 @@ class StorageRepository {
         this.instance = obj;
 
         for (var key in obj) {
-            localStorage.setItem(`${this.localStoragePrefix}_${key}`, obj[key]);
+            localStorage.setItem(`${this.localStoragePrefix}${key}`, obj[key]);
         }
     }
 }
