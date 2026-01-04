@@ -22,25 +22,20 @@ class SingleAssetSlide extends ViewBase {
      */
     onInit(view, onComplete) {
         
+        var thisRef = this;
         var srcUrl = this.immichClient.url(`/assets/${this.asset.id}/thumbnail`, "size=preview");
-
         var img = view.filter('.img')
             .css('background-image', 'url(' + srcUrl + ')')
             .css('transition-duration', `${this.settings.slideDuration * 2}ms`);
 
-        var thisRef = this;
-        setTimeout(function () {
-            var newBackgroundSize = `scale(${thisRef.settings.zoomMultiplier})`;
-            img.css('transform', newBackgroundSize)
-        }, 100);
+        setTimeout(function () { thisRef.startZoomAnimation(img) }, 100);
 
-        var simpleInfo = view.filter('.simple-info');
-        var detailedInfoCard = view.filter('.detailed-info');
+        var simpleInfoCard = view.filter('.simple');
+        var detailedInfoCard = view.filter('.detailed');
 
-        var year = new Date(this.asset.localDateTime).getFullYear();
-        var month = months[new Date(this.asset.localDateTime).getMonth()];
-        view.find(".time").text(`${month} ${year}`);
-
+        var time = this.view.find(".time");
+        this.templateTime(time);
+        
         var hasLocationInfo = this.asset.exifInfo.city != undefined && this.asset.exifInfo.country != undefined;
         if (hasLocationInfo == false) {
             detailedInfoCard.hide();
@@ -48,13 +43,34 @@ class SingleAssetSlide extends ViewBase {
             return;
         }
 
-        simpleInfo.hide();
-
-        detailedInfoCard.find(".city").text(`${this.asset.exifInfo.city}`);
-        detailedInfoCard.find(".country").text(`${this.asset.exifInfo.country},`);
-
+        simpleInfoCard.hide();
+        this.templateDetailedInfoCard(detailedInfoCard);
 
         onComplete();
+    }
+
+    /**
+     * @param {JQuery<HTMLElement>} img 
+     */
+    startZoomAnimation(img) {
+        img.css('transform', `scale(${this.settings.zoomMultiplier})`);// activate zoom animation 
+    }
+
+    /**
+     * @param {JQuery<HTMLElement>} detailedInfoCard 
+     */
+    templateDetailedInfoCard(detailedInfoCard) {
+        detailedInfoCard.find(".city").text(`${this.asset.exifInfo.city}`);
+        detailedInfoCard.find(".country").text(`${this.asset.exifInfo.country},`);
+    }
+
+    /**
+     * @param {JQuery<HTMLElement>} timeElement 
+     */
+    templateTime(timeElement) {
+        var year = new Date(this.asset.localDateTime).getFullYear();
+        var month = months[new Date(this.asset.localDateTime).getMonth()];
+        timeElement.text(`${month} ${year}`);
     }
 
 
