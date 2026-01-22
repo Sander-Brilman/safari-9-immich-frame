@@ -35,6 +35,7 @@ function initNormalStartup() {
 
     var state = stateRepo.getInstance();
     var gridView = new AlbumGridView(stateRepo, immichClient);
+
     var settingsView = new SettingsView(settingsRepo, stateRepo, function () {
         immichClient = ImmichClient.fromSettings(settingsRepo.getInstance());
         alertView.showSuccess("Settings saved!");

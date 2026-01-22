@@ -142,7 +142,7 @@ class Settings {
         }
 
         if (typeof this.zoomMultiplier == "string") {
-            this.zoomMultiplier = parseInt(this.zoomMultiplier);
+            this.zoomMultiplier = parseFloat(this.zoomMultiplier);
         }
 
         if (this.slideDuration == undefined || isNaN(this.slideDuration)) {
