@@ -124,7 +124,7 @@ class AlbumSlideShowView extends ViewBase {
 
             thisRef.preFetchTimeoutId = setTimeout(function () {
                 thisRef.removeTopAssetFromViewStack();
-            }, settings.slideDuration / 3);
+            }, settings.slideDuration / 2);
 
             thisRef.currentAssetIndex++;
             thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
