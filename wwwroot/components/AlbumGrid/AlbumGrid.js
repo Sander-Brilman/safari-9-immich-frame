@@ -1,16 +1,18 @@
 
-class AlbumGridView extends ViewBase {
+class AlbumGridView extends ComponentBase {
 
     /**
      * 
      * @param {StateRepository} stateRepo 
      * @param {ImmichClient} immichClient 
+     * @param {SettingsRepository} settings 
      */
-    constructor(stateRepo, immichClient) {
-        super("view/AlbumGrid/AlbumGrid.html");
+    constructor(stateRepo, immichClient, settings) {
+        super("components/AlbumGrid/AlbumGrid.html");
 
         this.stateRepo = stateRepo;
         this.immichClient = immichClient;
+        this.settingsRepo = settings;
     }
 
     /**
@@ -34,13 +36,13 @@ class AlbumGridView extends ViewBase {
                         <small>${album.assetCount} assets</small>
                     </button>
                     `)
-                    .click(function () {
+                    .on("click", function () {
                         
                         thisRef.stateRepo.getInstance().mostRecentAlbumId = album.id;
                         thisRef.stateRepo.save(thisRef.stateRepo.getInstance());
 
 
-                        openView(new AlbumSlideShowView(album.id, thisRef.immichClient))
+                        openView(new AlbumSlideShowView(album.id, thisRef.immichClient, thisRef.settingsRepo.get()))
                     })
 
                 buttonGrid.append(button)

@@ -1,6 +1,6 @@
 
 
-class SingleAssetSlide extends ViewBase {
+class SingleAssetSlide extends ComponentBase {
 
     /**
      * @param {object} asset 
@@ -8,7 +8,7 @@ class SingleAssetSlide extends ViewBase {
      * @param {Settings} settings 
      */
     constructor(asset, immichClient, settings) {
-        super("view/AlbumSlideShow/Slides/SingleAssetSlide.html");
+        super("components/AlbumSlideShow/Slides/SingleAssetSlide.html");
 
         this.asset = asset;
         this.immichClient = immichClient;

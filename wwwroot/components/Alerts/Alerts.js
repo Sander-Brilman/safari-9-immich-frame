@@ -1,9 +1,9 @@
 
 
-class AlertsView extends ViewBase {
+class AlertsView extends ComponentBase {
 
     constructor() {
-        super("view/Alerts/Alerts.html");
+        super("components/Alerts/Alerts.html");
     }
 
     /**

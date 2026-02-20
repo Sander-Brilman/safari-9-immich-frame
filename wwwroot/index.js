@@ -14,10 +14,10 @@ var alertView = new AlertsView();
 
 
 /**
- * @param {ViewBase} newViewObj 
+ * @param {ComponentBase} newViewObj 
  */
 function openView(newViewObj) {
-    openViewIn(mainViewContainer, newViewObj);
+    openComponentInElement(mainViewContainer, newViewObj);
 }
 
 
@@ -31,21 +31,21 @@ function initForcedSettingsView() {
 
 function initNormalStartup() {
 
-    var immichClient = ImmichClient.fromSettings(settingsRepo.getInstance());
+    var immichClient = ImmichClient.fromSettings(settingsRepo.get());
 
     var state = stateRepo.getInstance();
-    var gridView = new AlbumGridView(stateRepo, immichClient);
+    var gridView = new AlbumGridView(stateRepo, immichClient, settingsRepo);
 
     var settingsView = new SettingsView(settingsRepo, stateRepo, function () {
-        immichClient = ImmichClient.fromSettings(settingsRepo.getInstance());
+        immichClient = ImmichClient.fromSettings(settingsRepo.get());
         alertView.showSuccess("Settings saved!");
     })
 
-    openViewIn(headerContainer, new HeaderView(gridView, settingsView))
+    openComponentInElement(headerContainer, new HeaderView(gridView, settingsView))
 
     if (state.mostRecentAlbumId && state.mostRecentAlbumId.length > 0) {
         console.log("Recently opened album found, automatically opening");
-        openView(new AlbumSlideShowView(state.mostRecentAlbumId, immichClient));
+        openView(new AlbumSlideShowView(state.mostRecentAlbumId, immichClient, settingsRepo.get()));
         return;
     }
 
@@ -55,7 +55,7 @@ function initNormalStartup() {
 }
 
 function init() {
-    settingsRepo.getInstance().validate(
+    settingsRepo.get().validate(
         function () {// valid settings, statup as normal
             console.log(`local settings valid, normal startup`);
             initNormalStartup()
@@ -68,5 +68,5 @@ function init() {
     );
 }
 
-openViewIn(alertContainer, alertView, init);
+openComponentInElement(alertContainer, alertView, init);
 

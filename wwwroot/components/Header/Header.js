@@ -1,11 +1,11 @@
-class HeaderView extends ViewBase {
+class HeaderView extends ComponentBase {
 
     /**
      * @param {AlbumGridView} gridView 
      * @param {SettingsView} settingsView 
      */
     constructor(gridView, settingsView) {
-        super("view/Header/Header.html");
+        super("components/Header/Header.html");
 
         this.gridView = gridView;
         this.settingsView = settingsView;
