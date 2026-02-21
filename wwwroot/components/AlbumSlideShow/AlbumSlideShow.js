@@ -63,8 +63,8 @@ class AlbumSlideShowView extends ComponentBase {
             album.assets.sort(function () { return Math.random() - 0.5 });
 
             thisRef.assets = album.assets;
-            thisRef.verticalAssets = thisRef.assets.filter(a => a.height > a.width);
-            thisRef.horizontalAssets = thisRef.assets.filter(a => a.height < a.width);
+            thisRef.verticalAssets = thisRef.assets.filter(function(a) { return a.height > a.width });
+            thisRef.horizontalAssets = thisRef.assets.filter(function(a) { return a.height < a.width });
 
             thisRef.currentAssetIndex = 0;
             thisRef.verticalAssetsIndex = 0;
@@ -121,7 +121,7 @@ class AlbumSlideShowView extends ComponentBase {
             return;
         }
 
-        var otherVerticalAssets = this.verticalAssets.filter(a => a != asset);
+        var otherVerticalAssets = this.verticalAssets.filter(function(a) { return a != asset });
         var asset2 = otherVerticalAssets[randomNumber(0, otherVerticalAssets.length - 1)];
         var multiAssetSlide = new SplitViewSlide(asset, asset2, this.immichClient, this.settings);
 

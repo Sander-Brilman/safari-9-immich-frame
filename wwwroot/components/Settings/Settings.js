@@ -51,7 +51,7 @@ class SettingsView extends ComponentBase {
                 parseInt(animationSpeedInput.val().toString()),
                 parseInt(slideDurationInput.val().toString()),
                 parseFloat(zoomMultiplier.val().toString()),
-                enableSplitView.is(":checked"),
+                enableSplitView.is(":checked")
             );
 
             console.log("form submit, new settings:", newSettings);
