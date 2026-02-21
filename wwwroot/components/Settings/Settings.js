@@ -19,7 +19,7 @@ class SettingsView extends ComponentBase {
      */
     _initSettingsForm(form) {
         var thisRef = this;
-        var settings = this.settingsRepo.get();
+        var settings = this.settingsRepo.getInstance();
 
         console.log("settings", settings);
         
@@ -77,7 +77,7 @@ class SettingsView extends ComponentBase {
         var state = this.stateRepo.getInstance();
 
         var importUrlInput = form.find("#import-url").val(state.configFileUrl);
-        var jsonTextInput = form.find('#json-text').val(JSON.stringify(this.settingsRepo.get(), null, " "));
+        var jsonTextInput = form.find('#json-text').val(JSON.stringify(this.settingsRepo.getInstance(), null, " "));
         
         form.submit(function (e) {
             console.log("import form submit");

@@ -111,7 +111,7 @@ class AlbumSlideShowView extends ComponentBase {
         var viewIsVertical = this.view.height() > this.view.width();
 
         if (assetIsHorizontal || viewIsVertical || this.settings.enableSplitView == false) {
-            var singleAssetSlide = new SingleAssetSlide(asset, this.immichClient, settingsRepo.get());
+            var singleAssetSlide = new SingleAssetSlide(asset, this.immichClient, settingsRepo.getInstance());
             
             openComponentInElement(slideContainer, singleAssetSlide, function() {
                 thisRef.slideShowContainer.prepend(slideContainer);
@@ -136,7 +136,7 @@ class AlbumSlideShowView extends ComponentBase {
     }
 
     removeTopAssetFromViewStack() {
-        var settings = settingsRepo.get();
+        var settings = settingsRepo.getInstance();
         this.slideShowContainer.children().last().fadeOut(settings.animationSpeed, function () { this.remove() });
 
     }
@@ -145,7 +145,7 @@ class AlbumSlideShowView extends ComponentBase {
 
 
     setIntervals() {
-        var settings = settingsRepo.get();
+        var settings = settingsRepo.getInstance();
         var Interval5Minutes = 60000 * 5;
         var thisRef = this;
 

@@ -31,13 +31,13 @@ function initForcedSettingsView() {
 
 function initNormalStartup() {
 
-    var immichClient = ImmichClient.fromSettings(settingsRepo.get());
+    var immichClient = ImmichClient.fromSettings(settingsRepo.getInstance());
 
     var state = stateRepo.getInstance();
     var gridView = new AlbumGridView(stateRepo, immichClient, settingsRepo);
 
     var settingsView = new SettingsView(settingsRepo, stateRepo, function () {
-        immichClient = ImmichClient.fromSettings(settingsRepo.get());
+        immichClient = ImmichClient.fromSettings(settingsRepo.getInstance());
         alertView.showSuccess("Settings saved!");
     })
 
@@ -45,7 +45,7 @@ function initNormalStartup() {
 
     if (state.mostRecentAlbumId && state.mostRecentAlbumId.length > 0) {
         console.log("Recently opened album found, automatically opening");
-        openView(new AlbumSlideShowView(state.mostRecentAlbumId, immichClient, settingsRepo.get()));
+        openView(new AlbumSlideShowView(state.mostRecentAlbumId, immichClient, settingsRepo.getInstance()));
         return;
     }
 
@@ -55,7 +55,7 @@ function initNormalStartup() {
 }
 
 function init() {
-    settingsRepo.get().validate(
+    settingsRepo.getInstance().validate(
         function () {// valid settings, statup as normal
             console.log(`local settings valid, normal startup`);
             initNormalStartup()

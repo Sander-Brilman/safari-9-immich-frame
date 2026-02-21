@@ -11,7 +11,7 @@ class StorageRepository {
         this.instance = null;
     }
 
-    get() {
+    getInstance() {
         
         if (this.instance != null) {
             return this.instance;
@@ -181,12 +181,12 @@ class SettingsRepository {
      * 
      * @returns {Settings}
      */
-    get() {
+    getInstance() {
         if (this.instance != undefined) {
             return this.instance;
         }
 
-        this.instance = Settings.fromObject(this.storageRepo.get());
+        this.instance = Settings.fromObject(this.storageRepo.getInstance());
 
         if (this.instance != undefined) {
             this.instance = Settings.fromObject(this.instance);
@@ -230,7 +230,7 @@ class StateRepository {
     }
 
     getInstance() {
-        this.instance = this.storageRepo.get() || new State();
+        this.instance = this.storageRepo.getInstance() || new State();
         return this.instance;
     }
 

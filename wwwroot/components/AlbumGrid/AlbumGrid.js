@@ -42,7 +42,7 @@ class AlbumGridView extends ComponentBase {
                         thisRef.stateRepo.save(thisRef.stateRepo.getInstance());
 
 
-                        openView(new AlbumSlideShowView(album.id, thisRef.immichClient, thisRef.settingsRepo.get()))
+                        openView(new AlbumSlideShowView(album.id, thisRef.immichClient, thisRef.settingsRepo.getInstance()))
                     })
 
                 buttonGrid.append(button)
