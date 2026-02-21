@@ -11,10 +11,8 @@ class StorageRepository {
         this.instance = null;
     }
 
-    getInstance() {
+    get() {
         
-
-                            
         if (this.instance != null) {
             return this.instance;
         }
@@ -92,23 +90,26 @@ class Settings {
             "",
             1000,
             10000,
-            1.25
+            1.25,
+            true
         );
     }
 
-    /*
+    /**
      * @param {string} immichApiKey 
      * @param {string} immichServerUrl 
      * @param {number} animationSpeed 
      * @param {number} slideDuration 
      * @param {number} zoomMultiplier 
+     * @param {boolean} enableSplitView 
      */
-    constructor(immichApiKey, immichServerUrl, animationSpeed, slideDuration, zoomMultiplier) {
+    constructor(immichApiKey, immichServerUrl, animationSpeed, slideDuration, zoomMultiplier, enableSplitView) {
         this.immichApiKey = immichApiKey;
         this.immichServerUrl = immichServerUrl;
         this.animationSpeed = animationSpeed;
         this.slideDuration = slideDuration;
         this.zoomMultiplier = zoomMultiplier;
+        this.enableSplitView = enableSplitView;
     }
 
     /**
@@ -154,6 +155,10 @@ class Settings {
             this.slideDuration = parseInt(this.slideDuration);
         }
 
+        if (typeof this.enableSplitView == "string") {
+            this.enableSplitView = this.enableSplitView == "true";
+        }
+
         // $.get(targetSettings.immichServerUrl, function(response) {
         //     onValid()
         // }).catch(function(e) {
@@ -164,26 +169,25 @@ class Settings {
     }
 }
 
-class SettingsRepository extends StorageRepository {
+class SettingsRepository {
     constructor() {
-        super("settings");
 
         /** @type {Settings} */
         this.instance = undefined
+        this.storageRepo = new StorageRepository("settings");
     }
 
     /**
      * 
      * @returns {Settings}
      */
-    getInstance() {
+    get() {
         if (this.instance != undefined) {
             return this.instance;
         }
 
-        this.instance = Settings.fromObject(super.getInstance());
+        this.instance = Settings.fromObject(this.storageRepo.get());
 
-        
         if (this.instance != undefined) {
             this.instance = Settings.fromObject(this.instance);
         } else {
@@ -191,6 +195,15 @@ class SettingsRepository extends StorageRepository {
         }
 
         return this.instance;
+    }
+
+    /**
+     * 
+     * @param {Settings} newSettings 
+     */
+    save(newSettings) {
+        this.instance = newSettings;
+        this.storageRepo.save(newSettings);
     }
 }
 
@@ -209,16 +222,23 @@ class State {
     }
 }
 
-class StateRepository extends StorageRepository {
+class StateRepository {
     constructor() {
-        super("state");
-
         /** @type {State} */
         this.instance
+        this.storageRepo = new StorageRepository("state");
     }
 
     getInstance() {
-        this.instance = super.getInstance() || new State();
+        this.instance = this.storageRepo.get() || new State();
         return this.instance;
+    }
+
+    /**
+     * @param {State} state 
+     */
+    save(state) {
+        this.instance = state;
+        this.storageRepo.save(state);
     }
 }

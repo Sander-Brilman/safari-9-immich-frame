@@ -1,5 +1,5 @@
 
-class SettingsView extends ViewBase {
+class SettingsView extends ComponentBase {
 
     /**
      * @param {SettingsRepository} settingsRepo 
@@ -7,7 +7,7 @@ class SettingsView extends ViewBase {
      * @param {() => void} onSettingsSaved 
      */
     constructor(settingsRepo, stateRepo, onSettingsSaved) {
-        super("view/Settings/Settings.html");
+        super("components/Settings/Settings.html");
 
         this.settingsRepo = settingsRepo;
         this.stateRepo = stateRepo;
@@ -19,7 +19,10 @@ class SettingsView extends ViewBase {
      */
     _initSettingsForm(form) {
         var thisRef = this;
-        var settings = this.settingsRepo.getInstance();
+        var settings = this.settingsRepo.get();
+
+        console.log("settings", settings);
+        
 
 
         var serverUrlInput = form.find("#immich-server-url").val(settings.immichServerUrl);
@@ -27,6 +30,7 @@ class SettingsView extends ViewBase {
         var animationSpeedInput = form.find("#animation-speed").val(settings.animationSpeed);
         var slideDurationInput = form.find("#slide-duration").val(settings.slideDuration);
         var zoomMultiplier = form.find("#zoom-multiplier").val(settings.zoomMultiplier);
+        var enableSplitView = form.find("input[type=checkbox]#enable-split-view").prop("checked", settings.enableSplitView);
 
         form.submit(function (e) {
             e.preventDefault();
@@ -46,7 +50,8 @@ class SettingsView extends ViewBase {
                 serverUrl,
                 parseInt(animationSpeedInput.val().toString()),
                 parseInt(slideDurationInput.val().toString()),
-                parseFloat(zoomMultiplier.val().toString())
+                parseFloat(zoomMultiplier.val().toString()),
+                enableSplitView.is(":checked"),
             );
 
             console.log("form submit, new settings:", newSettings);
@@ -72,7 +77,7 @@ class SettingsView extends ViewBase {
         var state = this.stateRepo.getInstance();
 
         var importUrlInput = form.find("#import-url").val(state.configFileUrl);
-        var jsonTextInput = form.find('#json-text');
+        var jsonTextInput = form.find('#json-text').val(JSON.stringify(this.settingsRepo.get(), null, " "));
         
         form.submit(function (e) {
             console.log("import form submit");

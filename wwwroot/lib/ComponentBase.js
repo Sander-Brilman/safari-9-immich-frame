@@ -2,7 +2,7 @@
 /**
  * @abstract
  */
-class ViewBase {
+class ComponentBase {
 
     /**
      * @param {string} htmlFileUrl 
@@ -17,7 +17,7 @@ class ViewBase {
     /**
      * @param {(content: JQuery<HTMLElement>) => void} onComplete 
      */
-    startViewInit(onComplete) {
+    startInit(onComplete) {
         var thisRef = this;
         $.get(this.htmlFileUrl, function (rawViewHtml) {
 
@@ -64,17 +64,17 @@ class ViewBase {
 
 
 /**
- * @param {JQuery<HTMLElement>} container 
- * @param {ViewBase} newViewObj 
+ * @param {JQuery<HTMLElement>} containerElement 
+ * @param {ComponentBase} component 
  * @param {() => void | undefined} [onComplete=undefined] 
  */
-function openViewIn(container, newViewObj, onComplete) {
-    container.children().remove();
+function openComponentInElement(containerElement, component, onComplete) {
+    containerElement.children().remove();
 
-    newViewObj.startViewInit(function (newView) {
-        container.append(newView)
+    component.startInit(function (newView) {
+        containerElement.append(newView)
         newView.on("remove", function () {
-            newViewObj.onRemove(function () { });
+            component.onRemove(function () { });
         });
 
         if (onComplete) {

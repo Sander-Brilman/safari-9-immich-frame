@@ -14,14 +14,15 @@ var months = [
     "December"
 ]
 
-class AlbumSlideShowView extends ViewBase {
+class AlbumSlideShowView extends ComponentBase {
 
     /**
      * @param {string} albumId 
      * @param {ImmichClient} immichClient 
+     * @param {Settings} settings 
      */
-    constructor(albumId, immichClient) {
-        super("view/AlbumSlideShow/AlbumSlideShow.html");
+    constructor(albumId, immichClient, settings) {
+        super("components/AlbumSlideShow/AlbumSlideShow.html");
         this.albumId = albumId;
 
         this.refreshAssetsIntervalId = 0;
@@ -29,11 +30,17 @@ class AlbumSlideShowView extends ViewBase {
         this.preFetchTimeoutId = 0;
         this.preFetchIntervalId = 0;
 
-
+        
         this.assets = [];
+        this.verticalAssets = [];
+        this.horizontalAssets = [];
+
         this.currentAssetIndex = 0;
+        this.verticalAssetsIndex = 0;
+
 
         this.immichClient = immichClient;
+        this.settings = settings;
 
         /** @type {JQuery<HTMLElement>} */
         this.slideShowContainer
@@ -48,9 +55,19 @@ class AlbumSlideShowView extends ViewBase {
         var thisRef = this;
         var url = this.immichClient.apiUrl(`/albums/${this.albumId}`);
 
+
+
         $.get(url, function (album) {
-            album.assets.sort(function () { return 0.5 - Math.random() });
+
+            album.assets.sort(function () { return Math.random() - 0.5 });
+            album.assets.sort(function () { return Math.random() - 0.5 });
+
             thisRef.assets = album.assets;
+            thisRef.verticalAssets = thisRef.assets.filter(a => a.height > a.width);
+            thisRef.horizontalAssets = thisRef.assets.filter(a => a.height < a.width);
+
+            thisRef.currentAssetIndex = 0;
+            thisRef.verticalAssetsIndex = 0;
 
             if (onComplete) {
                 onComplete()
@@ -68,43 +85,58 @@ class AlbumSlideShowView extends ViewBase {
 
 
     /**
+     * @param {Array} array 
      * @param {number} assetIndex 
      */
-    loopAssetIndex(assetIndex) {
+    loopArrayIndex(array, assetIndex) {
         if (assetIndex < 0) {
-            assetIndex = (Math.abs(assetIndex) % this.assets.length);
-            assetIndex = (this.assets.length - 1) - assetIndex;
+            assetIndex = (Math.abs(assetIndex) % array.length);
+            return (array.length - 1) - assetIndex;
         }
 
-        assetIndex = assetIndex % this.assets.length;
-        return assetIndex;
+        return assetIndex % array.length;
     }
 
 
 
 
-    /**
-     * @param {number} assetIndex 
-     */
-    addAssetToViewStack(assetIndex) {
+    addAssetToViewStack() {
         if (this.assets.length <= 0) { return; }
 
-        assetIndex = this.loopAssetIndex(assetIndex);
-
-        var asset = this.assets[assetIndex];
-
-        var slideContainer = $(`<div class="slide">`);
-        var slide = new SingleAssetSlide(asset, this.immichClient, settingsRepo.getInstance());
-        
         var thisRef = this;
-        openViewIn(slideContainer, slide, function() {
+        var slideContainer = $(`<div class="slide">`);
+        var asset = this.assets[this.loopArrayIndex(this.assets, this.currentAssetIndex++)];
+
+        var assetIsHorizontal = asset.width > asset.height;
+        var viewIsVertical = this.view.height() > this.view.width();
+
+        if (assetIsHorizontal || viewIsVertical || this.settings.enableSplitView == false) {
+            var singleAssetSlide = new SingleAssetSlide(asset, this.immichClient, settingsRepo.get());
+            
+            openComponentInElement(slideContainer, singleAssetSlide, function() {
+                thisRef.slideShowContainer.prepend(slideContainer);
+                slideContainer[0].scrollIntoView();
+            });
+
+            return;
+        }
+
+        var otherVerticalAssets = this.verticalAssets.filter(a => a != asset);
+        var asset2 = otherVerticalAssets[randomNumber(0, otherVerticalAssets.length - 1)];
+        var multiAssetSlide = new SplitViewSlide(asset, asset2, this.immichClient, this.settings);
+
+        openComponentInElement(slideContainer, multiAssetSlide, function() {
             thisRef.slideShowContainer.prepend(slideContainer);
             slideContainer[0].scrollIntoView();
         });
+
+        this.verticalAssetsIndex += 2;
+
+        return;
     }
 
     removeTopAssetFromViewStack() {
-        var settings = settingsRepo.getInstance();
+        var settings = settingsRepo.get();
         this.slideShowContainer.children().last().fadeOut(settings.animationSpeed, function () { this.remove() });
 
     }
@@ -113,13 +145,13 @@ class AlbumSlideShowView extends ViewBase {
 
 
     setIntervals() {
-        var settings = settingsRepo.getInstance();
-        var Interval2Minutes = 120000;
+        var settings = settingsRepo.get();
+        var Interval5Minutes = 60000 * 5;
         var thisRef = this;
 
         this.onRemove(function () { });// remove all existing intervals
 
-        this.refreshAssetsIntervalId = setInterval(function () { thisRef.refreshAssets_Then() }, Interval2Minutes)
+        this.refreshAssetsIntervalId = setInterval(function () { thisRef.refreshAssets_Then() }, Interval5Minutes)
         this.loadNextAssetIntervalId = setInterval(function () {
 
             thisRef.preFetchTimeoutId = setTimeout(function () {
@@ -127,7 +159,7 @@ class AlbumSlideShowView extends ViewBase {
             }, settings.slideDuration / 2);
 
             thisRef.currentAssetIndex++;
-            thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+            thisRef.addAssetToViewStack();
 
         }, settings.slideDuration);
 
@@ -149,7 +181,7 @@ class AlbumSlideShowView extends ViewBase {
             .on("click", function () {
                 thisRef.currentAssetIndex--;
                 thisRef.setIntervals();
-                thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+                thisRef.addAssetToViewStack();
                 thisRef.removeTopAssetFromViewStack();
             });
 
@@ -157,7 +189,7 @@ class AlbumSlideShowView extends ViewBase {
             .on("click", function () {
                 thisRef.currentAssetIndex++;
                 thisRef.setIntervals();
-                thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+                thisRef.addAssetToViewStack();
                 thisRef.removeTopAssetFromViewStack();
             })
 
@@ -165,7 +197,7 @@ class AlbumSlideShowView extends ViewBase {
 
         this.setIntervals();
         this.refreshAssets_Then(function () {
-            thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+            thisRef.addAssetToViewStack();
             onComplete();
         });
 
