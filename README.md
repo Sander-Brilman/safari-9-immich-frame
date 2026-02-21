@@ -1,6 +1,6 @@
 # Safari 9 Immich Frame
 
-**Warning! While this project is now fairly stable updates can still happen en breaking changes are not guarenteed not to happen. If you do want an extremely stable version then it is recommended to download the code and host it yourself to prevent automatic updates**  
+**Warning! While this project is now fairly stable updates can still happen and breaking changes are not guarenteed not to happen. If you do want an extremely stable version then it is recommended to download the code and host it yourself to prevent unwanted automatic updates**  
 
 Safari 9 Immich Frame is an photo frame for safari 9 using [Immich](https://immich.app/) as the photo backend. While it partially shares a name, this is not related to the [Immich Frame](https://immichframe.dev/) or the [Immich kiosk](https://demo.immichkiosk.app/) project, other then a shared love for Immich ofcourse!
 
