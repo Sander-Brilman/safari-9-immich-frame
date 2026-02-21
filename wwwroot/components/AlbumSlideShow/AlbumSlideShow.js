@@ -100,12 +100,12 @@ class AlbumSlideShowView extends ComponentBase {
 
 
 
-    addAssetToViewStack() {
+    addAssetToViewStack(assetIndex) {
         if (this.assets.length <= 0) { return; }
 
         var thisRef = this;
         var slideContainer = $(`<div class="slide">`);
-        var asset = this.assets[this.loopArrayIndex(this.assets, this.currentAssetIndex++)];
+        var asset = this.assets[this.loopArrayIndex(this.assets, assetIndex)];
 
         var assetIsHorizontal = asset.width > asset.height;
         var viewIsVertical = this.view.height() > this.view.width();
@@ -121,7 +121,8 @@ class AlbumSlideShowView extends ComponentBase {
             return;
         }
 
-        var otherVerticalAssets = this.verticalAssets.filter(function(a) { return a != asset });
+
+        var otherVerticalAssets = this.verticalAssets.filter(function(a, i) { return a != asset });
         var asset2 = otherVerticalAssets[randomNumber(0, otherVerticalAssets.length - 1)];
         var multiAssetSlide = new SplitViewSlide(asset, asset2, this.immichClient, this.settings);
 
@@ -159,7 +160,7 @@ class AlbumSlideShowView extends ComponentBase {
             }, settings.slideDuration / 2);
 
             thisRef.currentAssetIndex++;
-            thisRef.addAssetToViewStack();
+            thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
 
         }, settings.slideDuration);
 
@@ -181,7 +182,7 @@ class AlbumSlideShowView extends ComponentBase {
             .on("click", function () {
                 thisRef.currentAssetIndex--;
                 thisRef.setIntervals();
-                thisRef.addAssetToViewStack();
+                thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
                 thisRef.removeTopAssetFromViewStack();
             });
 
@@ -189,7 +190,7 @@ class AlbumSlideShowView extends ComponentBase {
             .on("click", function () {
                 thisRef.currentAssetIndex++;
                 thisRef.setIntervals();
-                thisRef.addAssetToViewStack();
+                thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
                 thisRef.removeTopAssetFromViewStack();
             })
 
@@ -197,7 +198,8 @@ class AlbumSlideShowView extends ComponentBase {
 
         this.setIntervals();
         this.refreshAssets_Then(function () {
-            thisRef.addAssetToViewStack();
+            thisRef.currentAssetIndex++;
+            thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
             onComplete();
         });
 
