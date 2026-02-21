@@ -24,7 +24,7 @@
             localStorageBroken = true;
         }
 
-        var isDevEnv = true;//localStorage.getItem("enableDevtools") == "true";
+        var isDevEnv = localStorage.getItem("enableDevtools") == "true" || window.location.href.indexOf("debug") > -1;
         if (localStorageBroken || isDevEnv) {
             eruda.init();
 
