@@ -30,13 +30,10 @@ class AlbumSlideShowView extends ComponentBase {
         this.preFetchTimeoutId = 0;
         this.preFetchIntervalId = 0;
 
-        
-        this.assets = [];
-        this.verticalAssets = [];
-        this.horizontalAssets = [];
 
-        this.currentAssetIndex = 0;
-        this.verticalAssetsIndex = 0;
+        /** @type {ComponentBase[]} */
+        this.slides = [];
+        this.currentSlideIndex = 0;
 
 
         this.immichClient = immichClient;
@@ -55,19 +52,40 @@ class AlbumSlideShowView extends ComponentBase {
         var thisRef = this;
         var url = this.immichClient.apiUrl(`/albums/${this.albumId}`);
 
-
-
         $.get(url, function (album) {
 
-            album.assets.sort(function () { return Math.random() - 0.5 });
-            album.assets.sort(function () { return Math.random() - 0.5 });
+            var newSlides = [];
 
-            thisRef.assets = album.assets;
-            thisRef.verticalAssets = thisRef.assets.filter(function(a) { return a.height > a.width });
-            thisRef.horizontalAssets = thisRef.assets.filter(function(a) { return a.height < a.width });
+            if (thisRef.settings.enableSplitView == false) {
+                for (let i = 0; i < album.assets.length - 1; i++) {
+                    newSlides.push(new SingleAssetSlide(album.assets[i], thisRef.immichClient, thisRef.settings));
+                }
 
-            thisRef.currentAssetIndex = 0;
-            thisRef.verticalAssetsIndex = 0;
+                if (onComplete) {
+                    onComplete();
+                }
+
+                return;
+            }
+
+            var verticalAssets = album.assets.filter(function (a) { return a.height > a.width });
+            verticalAssets.sort(function () { return Math.random() - 0.5 });
+            for (let i = 0; i < verticalAssets.length - 2; i += 2) {
+                var asset1 = verticalAssets[i];
+                var asset2 = verticalAssets[i + 1];
+
+                newSlides.push(new SplitViewSlide(asset1, asset2, thisRef.immichClient, thisRef.settings));
+            }
+
+            var horizontalAssets = album.assets.filter(function (a) { return a.height < a.width });
+            for (let i = 0; i < horizontalAssets.length - 1; i++) {
+                newSlides.push(new SingleAssetSlide(horizontalAssets[i], thisRef.immichClient, thisRef.settings));
+            }
+
+            newSlides.sort(function () { return Math.random() - 0.5 });
+
+            thisRef.slides = newSlides;
+            thisRef.currentSlideIndex = 0;
 
             if (onComplete) {
                 onComplete()
@@ -99,47 +117,25 @@ class AlbumSlideShowView extends ComponentBase {
 
 
 
-
-    addAssetToViewStack(assetIndex) {
-        if (this.assets.length <= 0) { return; }
+    /**
+     * @param {number} slideIndex 
+     */
+    addSlideToViewStack(slideIndex) {
+        if (this.slides.length <= 0) { return; }
 
         var thisRef = this;
         var slideContainer = $(`<div class="slide">`);
-        var asset = this.assets[this.loopArrayIndex(this.assets, assetIndex)];
+        var slideComponent = this.slides[this.loopArrayIndex(this.slides, slideIndex)];
 
-        var assetIsHorizontal = asset.width > asset.height;
-        var viewIsVertical = this.view.height() > this.view.width();
-
-        if (assetIsHorizontal || viewIsVertical || this.settings.enableSplitView == false) {
-            var singleAssetSlide = new SingleAssetSlide(asset, this.immichClient, settingsRepo.getInstance());
-            
-            openComponentInElement(slideContainer, singleAssetSlide, function() {
-                thisRef.slideShowContainer.prepend(slideContainer);
-                slideContainer[0].scrollIntoView();
-            });
-
-            return;
-        }
-
-
-        var otherVerticalAssets = this.verticalAssets.filter(function(a, i) { return a != asset });
-        var asset2 = otherVerticalAssets[randomNumber(0, otherVerticalAssets.length - 1)];
-        var multiAssetSlide = new SplitViewSlide(asset, asset2, this.immichClient, this.settings);
-
-        openComponentInElement(slideContainer, multiAssetSlide, function() {
+        openComponentInElement(slideContainer, slideComponent, function () {
             thisRef.slideShowContainer.prepend(slideContainer);
             slideContainer[0].scrollIntoView();
         });
-
-        this.verticalAssetsIndex += 2;
-
-        return;
     }
 
     removeTopAssetFromViewStack() {
         var settings = settingsRepo.getInstance();
         this.slideShowContainer.children().last().fadeOut(settings.animationSpeed, function () { this.remove() });
-
     }
 
 
@@ -150,7 +146,7 @@ class AlbumSlideShowView extends ComponentBase {
         var Interval5Minutes = 60000 * 5;
         var thisRef = this;
 
-        this.onRemove(function () { });// remove all existing intervals
+        this.onRemove();// remove all existing intervals
 
         this.refreshAssetsIntervalId = setInterval(function () { thisRef.refreshAssets_Then() }, Interval5Minutes)
         this.loadNextAssetIntervalId = setInterval(function () {
@@ -159,8 +155,8 @@ class AlbumSlideShowView extends ComponentBase {
                 thisRef.removeTopAssetFromViewStack();
             }, settings.slideDuration / 2);
 
-            thisRef.currentAssetIndex++;
-            thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+            thisRef.currentSlideIndex++;
+            thisRef.addSlideToViewStack(thisRef.currentSlideIndex);
 
         }, settings.slideDuration);
 
@@ -180,17 +176,17 @@ class AlbumSlideShowView extends ComponentBase {
 
         var previousButton = $(`<button class="glass-tile"><i class="bi bi-arrow-left"></i> Previous slide</button>`)
             .on("click", function () {
-                thisRef.currentAssetIndex--;
+                thisRef.currentSlideIndex--;
                 thisRef.setIntervals();
-                thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+                thisRef.addSlideToViewStack(thisRef.currentSlideIndex);
                 thisRef.removeTopAssetFromViewStack();
             });
 
         var nextButton = $(`<button class="glass-tile">Next slide <i class="bi bi-arrow-right"></i></button>`)
             .on("click", function () {
-                thisRef.currentAssetIndex++;
+                thisRef.currentSlideIndex++;
                 thisRef.setIntervals();
-                thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+                thisRef.addSlideToViewStack(thisRef.currentSlideIndex);
                 thisRef.removeTopAssetFromViewStack();
             })
 
@@ -198,8 +194,8 @@ class AlbumSlideShowView extends ComponentBase {
 
         this.setIntervals();
         this.refreshAssets_Then(function () {
-            thisRef.currentAssetIndex++;
-            thisRef.addAssetToViewStack(thisRef.currentAssetIndex);
+            thisRef.currentSlideIndex++;
+            thisRef.addSlideToViewStack(thisRef.currentSlideIndex);
             onComplete();
         });
 
@@ -209,7 +205,7 @@ class AlbumSlideShowView extends ComponentBase {
     /**
      * @override
      * 
-     * @param {() => void} onComplete 
+     * @param {() => void} [onComplete=undefined] 
      */
     onRemove(onComplete) {
         clearInterval(this.refreshAssetsIntervalId);

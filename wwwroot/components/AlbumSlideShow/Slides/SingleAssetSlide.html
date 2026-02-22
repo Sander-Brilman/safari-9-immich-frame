@@ -1,21 +1,19 @@
-    <div class="img"></div>
-    
-    <h3 class="info-card simple glass-tile">
-        <small class="time"></small>
-    </h3>
-    
-    <h3 class="info-card detailed glass-tile">
-        <i class="bi bi-geo-fill"></i> 
-        <span>
-            <span class="city"></span><br>
-            <small class="country"></small> <small class="time"></small>
-        </span>
-    </h3>
+<div class="img"></div>
+
+<h3 class="info-card simple" style="display: none;">
+    <small class="time"></small>
+</h3>
+
+<h3 class="info-card detailed" style="display: none;">
+    <i class="bi bi-geo-fill"></i>
+    <span>
+        <span class="city"></span><br>
+        <small class="country"></small> <small class="time"></small>
+    </span>
+</h3>
 
 
 <style>
-
-
     .img {
         position: absolute;
         left: 0;
@@ -35,14 +33,17 @@
     .info-card {
         font-weight: bolder;
 
-        padding: .3em .6em;
-        font-size: 1.8em;
+        padding: .2em .4em;
+        font-size: 1.5em;
 
         margin: .5em;
         margin-left: .5em;
 
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
+        /* backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); */
+        
+        z-index: 1;
+
     }
 
     .detailed {
@@ -58,5 +59,4 @@
         font-size: 1.1em;
         margin-right: .35em;
     }
-
 </style>
