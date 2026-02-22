@@ -57,7 +57,7 @@ class AlbumSlideShowView extends ComponentBase {
             var newSlides = [];
 
             if (thisRef.settings.enableSplitView == false) {
-                for (let i = 0; i < album.assets.length - 1; i++) {
+                for (var i = 0; i < album.assets.length - 1; i++) {
                     newSlides.push(new SingleAssetSlide(album.assets[i], thisRef.immichClient, thisRef.settings));
                 }
 
@@ -70,7 +70,7 @@ class AlbumSlideShowView extends ComponentBase {
 
             var verticalAssets = album.assets.filter(function (a) { return a.height > a.width });
             verticalAssets.sort(function () { return Math.random() - 0.5 });
-            for (let i = 0; i < verticalAssets.length - 2; i += 2) {
+            for (var i = 0; i < verticalAssets.length - 2; i += 2) {
                 var asset1 = verticalAssets[i];
                 var asset2 = verticalAssets[i + 1];
 
@@ -78,7 +78,7 @@ class AlbumSlideShowView extends ComponentBase {
             }
 
             var horizontalAssets = album.assets.filter(function (a) { return a.height < a.width });
-            for (let i = 0; i < horizontalAssets.length - 1; i++) {
+            for (var i = 0; i < horizontalAssets.length - 1; i++) {
                 newSlides.push(new SingleAssetSlide(horizontalAssets[i], thisRef.immichClient, thisRef.settings));
             }
 
