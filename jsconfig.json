@@ -1,6 +1,13 @@
 {
     "compilerOptions": {
         "checkJs": true,
+        "target": "es5",
+        "lib": [
+            "es5",
+            "dom"
+        ],
+        "strict": true,
+        "noImplicitAny": true
     },
     "typeAcquisition": {
         "include": [

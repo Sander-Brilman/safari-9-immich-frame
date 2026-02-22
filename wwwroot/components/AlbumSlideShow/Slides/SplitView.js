@@ -36,6 +36,17 @@ class SplitViewSlide extends ComponentBase {
 
         openComponentInElement(assetContainer1, slide1, checkComplete);
         openComponentInElement(assetContainer2, slide2, checkComplete);
+
+        // var targetSizeSlide1 = randomNumber(0, 1) == 1 
+        //     ? 80
+        //     : 120;
+
+        // var thisRef = this;
+        // setTimeout(function() {
+        //     assetContainer1
+        //     .css('transition-duration', `${thisRef.settings.slideDuration * 2}ms`)
+        //     .css('width', `${targetSizeSlide1}%`);
+        // }, 50);
     }
 
 }

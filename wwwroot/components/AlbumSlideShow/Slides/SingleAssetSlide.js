@@ -28,7 +28,7 @@ class SingleAssetSlide extends ComponentBase {
             .css('background-image', 'url(' + srcUrl + ')')
             .css('transition-duration', `${this.settings.slideDuration * 2}ms`);
 
-        setTimeout(function () { thisRef.startZoomAnimation(img) }, 100);
+        setTimeout(function () { thisRef.startZoomAnimation(img) }, 50);
 
         var simpleInfoCard = view.filter('.simple');
         var detailedInfoCard = view.filter('.detailed');
@@ -37,14 +37,13 @@ class SingleAssetSlide extends ComponentBase {
         this.templateTime(time);
         
         var hasLocationInfo = this.asset.exifInfo.city != undefined && this.asset.exifInfo.country != undefined;
-        if (hasLocationInfo == false) {
-            detailedInfoCard.hide();
-            onComplete();
-            return;
+        if (hasLocationInfo) {
+            detailedInfoCard.find(".city").text(`${this.asset.exifInfo.city}`);
+            detailedInfoCard.find(".country").text(`${this.asset.exifInfo.country},`);
+            detailedInfoCard.show();
+        } else {
+            simpleInfoCard.show();
         }
-
-        simpleInfoCard.hide();
-        this.templateDetailedInfoCard(detailedInfoCard);
 
         onComplete();
     }
@@ -54,14 +53,6 @@ class SingleAssetSlide extends ComponentBase {
      */
     startZoomAnimation(img) {
         img.css('transform', `scale(${this.settings.zoomMultiplier})`);// activate zoom animation 
-    }
-
-    /**
-     * @param {JQuery<HTMLElement>} detailedInfoCard 
-     */
-    templateDetailedInfoCard(detailedInfoCard) {
-        detailedInfoCard.find(".city").text(`${this.asset.exifInfo.city}`);
-        detailedInfoCard.find(".country").text(`${this.asset.exifInfo.country},`);
     }
 
     /**
